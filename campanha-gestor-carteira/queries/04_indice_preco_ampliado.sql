@@ -1,0 +1,35 @@
+-- Achado 4: cruzamento de preco ampliado de 40 para 994 referencias (R$ 35,4 mi).
+-- Indexa cada item ao preco unitario mediano do proprio produto no periodo.
+-- Resultado: 1 compra 95,8 | 2-3 89,2 | 4-11 87,0 | 12+ 85,7 -> ordem monotonica.
+-- A inversao da amostra de 40 referencias (65,2 vs 69,0) era artefato de amostragem.
+WITH IT AS (
+  SELECT I.CODPROD, NVL(P.CODPARCMATRIZ,I.CODPARC) MZ, I.QUANTIDADE Q, I.FATURAMENTO_ITEM F, TRUNC(I.DATA) DT
+    FROM AD_VW_COM_ITENS I
+    JOIN AD_VW_COM_NOTAS N ON N.NUNOTA = I.NUNOTA   -- a view de itens nao expoe CODTIPOPER
+    JOIN TGFVEN V ON V.CODVEND = I.CODVEND
+    JOIN TGFPAR P ON P.CODPARC = I.CODPARC
+   WHERE I.DATA >= DATE '2025-09-01' AND I.DATA < DATE '2026-09-01'
+     AND V.TIPVEND='R' AND V.ATIVO='S' AND I.CODVEND <> 137
+     AND P.AD_CODGRUKEY IS NULL AND N.CODTIPOPER NOT IN (3226,3244)
+     AND I.QUANTIDADE > 0 AND I.FATURAMENTO_ITEM > 0
+),
+FREQ AS (SELECT MZ, COUNT(DISTINCT DT) NC FROM IT GROUP BY MZ),
+REF  AS (SELECT CODPROD, MEDIAN(F/Q) PU_REF FROM IT GROUP BY CODPROD),
+J AS (
+  SELECT IT.MZ, IT.CODPROD, IT.Q, IT.F, REF.PU_REF,
+         CASE WHEN FREQ.NC = 1 THEN '1 compra'
+              WHEN FREQ.NC <= 3  THEN '2-3'
+              WHEN FREQ.NC <= 11 THEN '4-11'
+              ELSE '12+' END FAIXA
+    FROM IT
+    JOIN REF  ON REF.CODPROD = IT.CODPROD
+    JOIN FREQ ON FREQ.MZ     = IT.MZ
+   WHERE REF.PU_REF > 0
+     AND (IT.F/IT.Q) BETWEEN REF.PU_REF*0.2 AND REF.PU_REF*5   -- apara outlier de cadastro
+)
+SELECT FAIXA, COUNT(DISTINCT MZ) CLIENTES, COUNT(DISTINCT CODPROD) REFERENCIAS,
+       ROUND(SUM(F)/1000000,2) FAT_MI,
+       ROUND(SUM(F)/SUM(Q*PU_REF)*100,1) INDICE_PRECO
+  FROM J
+ GROUP BY FAIXA
+ ORDER BY DECODE(FAIXA,'1 compra',1,'2-3',2,'4-11',3,4);

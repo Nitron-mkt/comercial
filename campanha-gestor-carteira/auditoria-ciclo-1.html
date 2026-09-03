@@ -1,0 +1,550 @@
+<title>Auditoria do Gestor de Carteira</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ground:#F4F5F2; --surface:#FCFCFB; --surface-2:#EFF1ED;
+  --ink:#191C1A; --ink-2:#4A514C; --ink-3:#767E78;
+  --rule:#DCDFD8; --rule-hard:#C3C8BF;
+  --pos:#068A6B; --neg:#BE4E14;
+  --pos-wash:#E3F1EC; --neg-wash:#F8E9DF;
+  --crit:#A8321C; --warn:#8A6410; --ok:#1F6B4F;
+  --accent:#0C5C4A;
+  --shadow:0 1px 2px rgba(25,28,26,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#141614; --surface:#1B1E1B; --surface-2:#232722;
+    --ink:#EDEFEA; --ink-2:#B4BBB4; --ink-3:#858D86;
+    --rule:#2F342E; --rule-hard:#414740;
+    --pos:#0FA07F; --neg:#DB7333;
+    --pos-wash:#14332B; --neg-wash:#33210F;
+    --crit:#E07A62; --warn:#D3A445; --ok:#4FB08A;
+    --accent:#5FC4A6;
+    --shadow:0 1px 2px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#141614; --surface:#1B1E1B; --surface-2:#232722;
+  --ink:#EDEFEA; --ink-2:#B4BBB4; --ink-3:#858D86;
+  --rule:#2F342E; --rule-hard:#414740;
+  --pos:#0FA07F; --neg:#DB7333;
+  --pos-wash:#14332B; --neg-wash:#33210F;
+  --crit:#E07A62; --warn:#D3A445; --ok:#4FB08A;
+  --accent:#5FC4A6;
+  --shadow:0 1px 2px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.6; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1000px; margin:0 auto; padding:0 24px 96px}
+.col{max-width:660px}
+
+/* ---- head ---- */
+header.doc{padding:52px 0 0}
+.kicker{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; font-weight:500;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3);
+  display:flex; flex-wrap:wrap; gap:6px 18px; margin-bottom:22px;
+}
+h1{
+  font-family:Newsreader,Georgia,serif; font-weight:500; font-size:clamp(34px,5vw,52px);
+  line-height:1.08; letter-spacing:-.015em; margin:0 0 18px; text-wrap:balance;
+}
+.lede{font-size:18.5px; line-height:1.58; color:var(--ink-2); margin:0}
+.lede strong{color:var(--ink); font-weight:600}
+.rule{height:1px; background:var(--rule-hard); border:0; margin:44px 0}
+
+/* ---- verdict strip ---- */
+.verdict{
+  background:var(--surface); border:1px solid var(--rule); border-left:3px solid var(--crit);
+  padding:20px 24px; margin:36px 0 0; box-shadow:var(--shadow);
+}
+.verdict p{margin:0; font-size:17px; line-height:1.55}
+.verdict .tag{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:600; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--crit); display:block; margin-bottom:8px;
+}
+
+/* ---- status grid ---- */
+.status{display:grid; grid-template-columns:repeat(auto-fit,minmax(224px,1fr)); gap:1px; background:var(--rule); border:1px solid var(--rule); margin:8px 0 0}
+.status div{background:var(--surface); padding:16px 18px}
+.status dt{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 7px; font-weight:500;
+}
+.status dd{margin:0; font-size:14.5px; line-height:1.45; color:var(--ink-2)}
+.pill{
+  display:inline-flex; align-items:center; gap:5px; font-family:"IBM Plex Mono",monospace;
+  font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+  padding:2px 7px; border:1px solid currentColor; margin-bottom:7px;
+}
+.pill.no{color:var(--crit)} .pill.part{color:var(--warn)} .pill.yes{color:var(--ok)}
+
+/* ---- findings ---- */
+section.finding{margin:56px 0 0; scroll-margin-top:20px}
+.fnum{
+  font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:600; letter-spacing:.1em;
+  color:var(--neg); display:block; margin-bottom:10px;
+}
+h2{
+  font-family:Newsreader,Georgia,serif; font-weight:500; font-size:clamp(25px,3.2vw,33px);
+  line-height:1.2; letter-spacing:-.01em; margin:0 0 14px; text-wrap:balance;
+}
+h3{
+  font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:15px; letter-spacing:.005em;
+  margin:34px 0 10px; color:var(--ink);
+}
+p{margin:0 0 15px; max-width:66ch}
+p.tight{margin-bottom:8px}
+.note{font-size:14px; color:var(--ink-3); line-height:1.55; max-width:70ch}
+em{font-style:italic}
+strong{font-weight:600}
+code, .mono{font-family:"IBM Plex Mono",monospace; font-size:.9em; background:var(--surface-2); padding:1px 4px; border-radius:2px}
+
+/* ---- data table ---- */
+.scroller{overflow-x:auto; margin:24px 0 10px; border:1px solid var(--rule); background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-size:14px; min-width:480px}
+caption{
+  text-align:left; font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
+  padding:13px 16px 11px; border-bottom:1px solid var(--rule);
+}
+th,td{padding:9px 16px; text-align:right; border-bottom:1px solid var(--rule)}
+th:first-child,td:first-child{text-align:left}
+thead th{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; font-weight:600; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--ink-3); border-bottom:1px solid var(--rule-hard); white-space:nowrap;
+}
+tbody td{font-variant-numeric:tabular-nums; color:var(--ink-2)}
+tbody td:first-child{color:var(--ink); font-weight:500}
+tbody tr:last-child td{border-bottom:0}
+tr.total td{border-top:1px solid var(--rule-hard); font-weight:600; color:var(--ink)}
+.num-neg{color:var(--neg); font-weight:500}
+.num-pos{color:var(--pos); font-weight:500}
+.flag{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.04em}
+
+/* ---- figure ---- */
+figure{margin:28px 0 10px; background:var(--surface); border:1px solid var(--rule); padding:20px 20px 14px}
+figcaption{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 16px; font-weight:500;
+}
+figure svg{display:block; width:100%; height:auto; overflow:visible}
+.src{font-size:12.5px; color:var(--ink-3); margin:14px 0 0; line-height:1.5}
+.legend{display:flex; gap:20px; flex-wrap:wrap; margin:0 0 14px; font-size:12.5px; color:var(--ink-2)}
+.legend span{display:inline-flex; align-items:center; gap:7px}
+.sw{width:11px; height:11px; border-radius:2px; display:inline-block}
+
+/* ---- directives ---- */
+.directives{margin:14px 0 0; padding:0; list-style:none; counter-reset:d}
+.directives > li{
+  counter-increment:d; position:relative; padding:22px 0 22px 54px; border-bottom:1px solid var(--rule);
+}
+.directives > li:first-child{border-top:1px solid var(--rule-hard)}
+.directives > li::before{
+  content:counter(d,decimal-leading-zero); position:absolute; left:0; top:22px;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:600; color:var(--accent);
+  letter-spacing:.06em;
+}
+.dhead{font-weight:600; font-size:16.5px; margin:0 0 6px; color:var(--ink); line-height:1.4}
+.directives p{margin:0 0 8px; font-size:15px; color:var(--ink-2); max-width:64ch}
+.meta{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--ink-3); display:flex; gap:16px; flex-wrap:wrap; margin-top:10px;
+}
+.meta b{color:var(--ink-2); font-weight:600}
+
+footer{margin:64px 0 0; padding-top:26px; border-top:1px solid var(--rule-hard); font-size:13px; color:var(--ink-3); line-height:1.6}
+footer p{max-width:74ch}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+@media (prefers-reduced-motion:no-preference){
+  .directives > li{transition:background .15s ease}
+}
+</style>
+
+<div class="wrap">
+
+<header class="doc">
+  <div class="kicker">
+    <span>Nitron · Diretoria Comercial</span>
+    <span>03 set 2026</span>
+    <span>Apuração: Sankhya NITRONPLASTPRD + CRM</span>
+  </div>
+  <h1>Auditoria do Gestor de Carteira</h1>
+  <p class="lede">O Ciclo 1 começou há três dias. A carteira <strong>não foi congelada</strong>, o campo que decide o que conta como positivação <strong>não existe no banco</strong>, e a régua dupla aprova <strong>1 dos 27 representantes</strong> que respondem por 86% da carteira. Abaixo, o que a base mostra e as oito decisões que precisam sair desta semana.</p>
+
+  <div class="verdict">
+    <span class="tag">Veredito</span>
+    <p>A campanha está apontada para a alavanca errada. A carteira comum perde <strong>R$ 21,3 milhões por ano</strong> em churn e contração, e recupera R$ 14,7 milhões em novos e reativados. A campanha mede reativação e positivação — os dois blocos menores — e não mede retenção, que é o buraco.</p>
+  </div>
+</header>
+
+<hr class="rule">
+
+<h2 style="margin-bottom:18px">Estado da execução, hoje</h2>
+<p class="col">A Fase 1 da especificação técnica era bloqueante e vencia em 01/09. Consultei os objetos no banco e o CRM diretamente.</p>
+
+<dl class="status">
+  <div>
+    <dt>Carteira congelada</dt>
+    <dd><span class="pill no">Não existe</span><br>Nenhuma tabela <code>AD_CAMP_*</code> no schema. Sem denominador oficial, a régua de 45% não é contestável nem defensável.</dd>
+  </div>
+  <div>
+    <dt>Flag de positivação</dt>
+    <dd><span class="pill no">Não existe</span><br><code>TGFTOP.AD_CONTAPOSIT</code> não foi criado. As TOPs 3226 (site Mundo UD) e 3244 (item trocado) ainda entram na conta.</dd>
+  </div>
+  <div>
+    <dt>Metas do Ciclo 2</dt>
+    <dd><span class="pill no">Zeradas</span><br>Fev, mar e abr/2027 somam <strong>R$ 20 mil</strong> em <code>TGMMET</code>. O Ciclo 2 nasce sem gatilho de meta.</dd>
+  </div>
+  <div>
+    <dt>Cadastro do cliente</dt>
+    <dd><span class="pill yes">Resolvido</span><br>Sem faturamento em <code>CODPARC = 0</code> nos 12 meses. Só 47 clientes da carteira (2,5%) têm cadastro inativo ou bloqueado.</dd>
+  </div>
+  <div>
+    <dt>CRM · Ciclo de Recompra</dt>
+    <dd><span class="pill part">Parcial</span><br>1.570 oportunidades para 1.873 clientes de carteira. Em amostra de 100: 49% sem responsável, 38% sem representante, 24% com contato vinculado errado.</dd>
+  </div>
+  <div>
+    <dt>CRM · Reativação</dt>
+    <dd><span class="pill part">Contaminado</span><br>10.224 oportunidades para ~1.800 inativos B2B. O funil mistura lead de campanha de marketing com cliente inativo da carteira.</dd>
+  </div>
+</dl>
+
+<hr class="rule">
+
+<!-- ================= 1 ================= -->
+<section class="finding">
+  <span class="fnum">ACHADO 01</span>
+  <h2>A régua dupla aprova um representante</h2>
+  <p>Testei a configuração oficial (positivar 45% da carteira congelada <em>e</em> atingir 90% da meta) sobre os 27 representantes com carteira de 20 clientes ou mais — eles concentram 1.602 dos 1.873 clientes, 86% da carteira comum. Usei mai–ago/2026 como quadrimestre-espelho da positivação e set–dez/2025 contra a meta de set–dez/2026 como proxy da meta.</p>
+
+  <div class="scroller">
+    <table>
+      <caption>Os dez maiores por carteira · mai–ago/2026 e proxy de meta</caption>
+      <thead>
+        <tr><th>Representante</th><th>Carteira</th><th>Positivou</th><th>% posit.</th><th>Faltam p/ 45%</th><th>% da meta</th><th>Passa</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Denize</td><td>269</td><td>137</td><td class="num-pos">50,9%</td><td>0</td><td>73,8%</td><td class="flag">meta</td></tr>
+        <tr><td>Edson Gravinez</td><td>172</td><td>63</td><td>36,6%</td><td>15</td><td>38,2%</td><td class="flag">ambas</td></tr>
+        <tr><td>Carlinhos</td><td>164</td><td>49</td><td>29,9%</td><td>25</td><td>62,8%</td><td class="flag">ambas</td></tr>
+        <tr><td>Marcio</td><td>126</td><td>13</td><td class="num-neg">10,3%</td><td>44</td><td>59,8%</td><td class="flag">ambas</td></tr>
+        <tr><td>Milton</td><td>80</td><td>24</td><td>30,0%</td><td>12</td><td class="num-pos">94,7%</td><td class="flag">posit.</td></tr>
+        <tr><td>Paulo Dresch</td><td>70</td><td>20</td><td>28,6%</td><td>12</td><td>45,2%</td><td class="flag">ambas</td></tr>
+        <tr><td>Mauro</td><td>58</td><td>11</td><td>19,0%</td><td>16</td><td>34,6%</td><td class="flag">ambas</td></tr>
+        <tr><td>José Fernando</td><td>56</td><td>16</td><td>28,6%</td><td>10</td><td>47,1%</td><td class="flag">ambas</td></tr>
+        <tr><td>José Alves</td><td>48</td><td>25</td><td class="num-pos">52,1%</td><td>0</td><td class="num-neg">26,0%</td><td class="flag">meta</td></tr>
+        <tr><td>Gilvanir</td><td>46</td><td>25</td><td class="num-pos">54,3%</td><td>0</td><td>50,4%</td><td class="flag">meta</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Coluna “Passa” indica em qual condição o representante <em>reprova</em>. Único aprovado nas duas entre os 27: <strong>Roberto</strong>, com carteira de 22 clientes — 45,5% de positivação e 95,9% da meta.</p>
+
+  <h3>O funil da régua</h3>
+  <div class="scroller">
+    <table>
+      <caption>27 representantes com carteira ≥ 20 clientes</caption>
+      <thead><tr><th>Condição</th><th>Aprovados</th><th>Reprovados</th><th>Taxa</th></tr></thead>
+      <tbody>
+        <tr><td>Positivação ≥ 45%</td><td>4</td><td>23</td><td>14,8%</td></tr>
+        <tr><td>Meta ≥ 90%</td><td>5</td><td>22</td><td>18,5%</td></tr>
+        <tr class="total"><td>As duas, cumulativas</td><td>1</td><td>26</td><td>3,7%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>E a régua percentual premia carteira pequena</h3>
+  <p>Trinta representantes têm menos de 10 clientes na carteira — 113 clientes somados, 6% do total. Sete deles “passam os 45%” positivando dois de quatro clientes. A mesma régua que é inatingível para o Marcio, com 126 clientes, é trivial para quem tem três. <strong>Percentual sobre carteira pequena não é meta, é ruído.</strong></p>
+</section>
+
+<!-- ================= 2 ================= -->
+<section class="finding">
+  <span class="fnum">ACHADO 02</span>
+  <h2>A meta está chapada e o denominador contaminado</h2>
+  <p>Em <code>TGMMET</code>, a meta de set a dez/2026 é de R$ 12,51 milhões por mês, idêntica nos quatro meses — sem sazonalidade, apesar de novembro valer 10,08% do ano e dezembro 6,63%. No canal de representantes, a meta do quadrimestre soma <strong>R$ 39,09 milhões</strong> contra <strong>R$ 22,80 milhões</strong> realizados no mesmo período de 2025. Pede-se <strong>+71%</strong>.</p>
+
+  <p>Pior: a meta é distribuída em blocos iguais, ignorando o histórico de cada um.</p>
+  <div class="scroller">
+    <table>
+      <caption>Mesma meta, históricos diferentes</caption>
+      <thead><tr><th>Representante</th><th>Realizado set–dez/25</th><th>Meta set–dez/26</th><th>Esforço exigido</th></tr></thead>
+      <tbody>
+        <tr><td>Milton</td><td>R$ 2,05 mi</td><td>R$ 2,17 mi</td><td>+6%</td></tr>
+        <tr><td>Denize</td><td>R$ 1,60 mi</td><td>R$ 2,17 mi</td><td>+36%</td></tr>
+        <tr><td>Carlinhos</td><td>R$ 1,36 mi</td><td>R$ 2,17 mi</td><td class="num-neg">+59%</td></tr>
+        <tr><td>Edson Gravinez</td><td>R$ 0,83 mi</td><td>R$ 2,17 mi</td><td class="num-neg">+162%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Metade do cadastro de representantes não vende</h3>
+  <p>São 99 representantes com <code>TIPVEND = 'R'</code> e cadastro ativo. Em oito meses de 2026:</p>
+  <div class="scroller">
+    <table>
+      <caption>Faturamento por representante · jan–ago/2026</caption>
+      <thead><tr><th>Faixa</th><th>Reps</th><th>Meta somada</th><th>Faturado</th><th>% da meta</th></tr></thead>
+      <tbody>
+        <tr><td>Sem faturamento</td><td>34</td><td>R$ 3,82 mi</td><td class="num-neg">R$ 0,00</td><td>0%</td></tr>
+        <tr><td>Abaixo de R$ 100 mil</td><td>24</td><td>R$ 5,93 mi</td><td>R$ 0,80 mi</td><td>13,4%</td></tr>
+        <tr><td>R$ 100–500 mil</td><td>22</td><td>R$ 14,03 mi</td><td>R$ 5,58 mi</td><td>39,8%</td></tr>
+        <tr><td>R$ 500 mil – 1 mi</td><td>7</td><td>R$ 9,33 mi</td><td>R$ 4,71 mi</td><td>50,4%</td></tr>
+        <tr><td>Acima de R$ 1 mi</td><td>12</td><td>R$ 44,23 mi</td><td>R$ 35,02 mi</td><td class="num-pos">79,2%</td></tr>
+        <tr class="total"><td>Total</td><td>99</td><td>R$ 77,35 mi</td><td>R$ 46,10 mi</td><td>59,6%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Doze representantes fazem 76% do faturamento e chegam a 79% da meta. Cinquenta e oito carregam R$ 9,75 milhões de meta e entregam R$ 0,80 milhão. Enquanto esses 58 estiverem no denominador, qualquer leitura agregada de “atingimento do canal” está errada — e a régua de 90% é aritmeticamente inatingível para o canal como um todo.</p>
+</section>
+
+<!-- ================= 3 ================= -->
+<section class="finding">
+  <span class="fnum">ACHADO 03</span>
+  <h2>A positivação não enxerga o que está sangrando</h2>
+  <p>Decompus a carteira comum entre set/24–ago/25 e set/25–ago/26, por CNPJ raiz, sem Key Accounts. O saldo de R$ 32,4 milhões esconde um fluxo bruto quatro vezes maior.</p>
+
+  <figure>
+    <figcaption>Carteira comum · de R$ 38,96 mi para R$ 32,40 mi em 12 meses</figcaption>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--neg)"></i>Perda</span>
+      <span><i class="sw" style="background:var(--pos)"></i>Ganho</span>
+      <span><i class="sw" style="background:var(--ink-3)"></i>Posição</span>
+    </div>
+    <svg viewBox="0 0 760 372" role="img" aria-label="Cascata: base R$ 38,96 milhões, menos churn 10,86, menos contração 10,39, mais expansão 5,42, mais reativação 1,89, mais novos 7,38, resultando em R$ 32,40 milhões">
+      <g stroke="var(--rule)" stroke-width="1">
+        <line x1="52" y1="260" x2="700" y2="260"></line>
+        <line x1="52" y1="200" x2="700" y2="200"></line>
+        <line x1="52" y1="140" x2="700" y2="140"></line>
+        <line x1="52" y1="80"  x2="700" y2="80"></line>
+        <line x1="52" y1="20"  x2="700" y2="20"></line>
+      </g>
+      <g font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="var(--ink-3)" text-anchor="end">
+        <text x="46" y="264">0</text>
+        <text x="46" y="204">10</text>
+        <text x="46" y="144">20</text>
+        <text x="46" y="84">30</text>
+        <text x="46" y="24">40</text>
+      </g>
+
+      <g stroke="var(--rule-hard)" stroke-width="1" stroke-dasharray="3 3">
+        <line x1="122" y1="26.2"  x2="154" y2="26.2"></line>
+        <line x1="214" y1="91.4"  x2="246" y2="91.4"></line>
+        <line x1="306" y1="153.7" x2="338" y2="153.7"></line>
+        <line x1="398" y1="121.2" x2="430" y2="121.2"></line>
+        <line x1="490" y1="109.9" x2="522" y2="109.9"></line>
+        <line x1="582" y1="65.6"  x2="614" y2="65.6"></line>
+      </g>
+
+      <rect x="62"  y="26.2"  width="60" height="233.8" fill="var(--ink-3)" rx="2"></rect>
+      <rect x="154" y="26.2"  width="60" height="65.2"  fill="var(--neg)" rx="2"></rect>
+      <rect x="246" y="91.4"  width="60" height="62.3"  fill="var(--neg)" rx="2"></rect>
+      <rect x="338" y="121.2" width="60" height="32.5"  fill="var(--pos)" rx="2"></rect>
+      <rect x="430" y="109.9" width="60" height="11.3"  fill="var(--pos)" rx="2"></rect>
+      <rect x="522" y="65.6"  width="60" height="44.3"  fill="var(--pos)" rx="2"></rect>
+      <rect x="614" y="65.6"  width="60" height="194.4" fill="var(--ink-3)" rx="2"></rect>
+
+      <g font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="600" text-anchor="middle">
+        <text x="92"  y="18"    fill="var(--ink)">38,96</text>
+        <text x="184" y="18"    fill="var(--neg)">−10,86</text>
+        <text x="276" y="83.4"  fill="var(--neg)">−10,39</text>
+        <text x="368" y="113.2" fill="var(--pos)">+5,42</text>
+        <text x="460" y="101.9" fill="var(--pos)">+1,89</text>
+        <text x="552" y="57.6"  fill="var(--pos)">+7,38</text>
+        <text x="644" y="57.6"  fill="var(--ink)">32,40</text>
+      </g>
+
+      <g font-family="'IBM Plex Sans', sans-serif" font-size="12" text-anchor="middle" fill="var(--ink-2)">
+        <text x="92"  y="280">Base 24/25</text>
+        <text x="184" y="280">Churn</text>
+        <text x="276" y="280">Contração</text>
+        <text x="368" y="280">Expansão</text>
+        <text x="460" y="280">Reativação</text>
+        <text x="552" y="280">Novos</text>
+        <text x="644" y="280">Base 25/26</text>
+      </g>
+      <g font-family="'IBM Plex Mono', monospace" font-size="10.5" text-anchor="middle" fill="var(--ink-3)">
+        <text x="92"  y="296">2.259 cli.</text>
+        <text x="184" y="296">950 cli.</text>
+        <text x="276" y="296">ficaram</text>
+        <text x="368" y="296">ficaram</text>
+        <text x="460" y="296">171 cli.</text>
+        <text x="552" y="296">393 cli.</text>
+        <text x="644" y="296">1.873 cli.</text>
+      </g>
+      <text x="52" y="330" font-family="'IBM Plex Mono', monospace" font-size="11" fill="var(--ink-3)">R$ milhões · canal representantes · CNPJ raiz · sem Key Account</text>
+    </svg>
+    <p class="src">A campanha atua sobre Reativação (R$ 1,89 mi) e sobre a positivação de quem já está na carteira. Churn e contração somam <strong>R$ 21,25 milhões</strong> e não têm nenhuma métrica na régua.</p>
+  </figure>
+
+  <h3>Positivar não é o mesmo que crescer</h3>
+  <p>Dos 583 clientes que positivaram em mai–ago/2026, <strong>98 caíram mais de 30%</strong> contra o mesmo quadrimestre de 2025 — <strong>R$ 1,02 milhão a menos</strong>. Todos contam no numerador da régua. Um cliente que vinha de R$ 50 mil e faz um pedido de R$ 4 mil é, para a campanha, um sucesso.</p>
+  <p>E a retenção do bloco que a campanha quer converter é o dado mais duro da base: dos 1.073 clientes que compraram uma única vez em 24/25, <strong>apenas 37,4% voltaram a comprar</strong> no ano seguinte, e <strong>13,2%</strong> chegaram a duas compras. A tese de “subir de 1 para 3 compras” esbarra numa porta que fecha antes: dois terços somem.</p>
+</section>
+
+<!-- ================= 4 ================= -->
+<section class="finding">
+  <span class="fnum">ACHADO 04</span>
+  <h2>Corrigindo o estudo de preço — e o que ele custa</h2>
+  <p>O diagnóstico usava uma amostra de 40 referências (R$ 20,4 mi, 29% do faturamento) e concluía que o cliente de uma compra pagava <em>menos</em> que o de 4 a 11 — a inversão que justificava “o desconto já está sendo dado sem contrapartida”. Refiz o cruzamento sobre <strong>994 referências e R$ 35,4 milhões</strong>, indexando cada item ao preço unitário mediano do próprio produto no período.</p>
+
+  <div class="scroller">
+    <table>
+      <caption>Índice de preço praticado · mediana do produto = 100 · 12 meses</caption>
+      <thead><tr><th>Frequência do cliente</th><th>Clientes</th><th>Faturamento</th><th>Índice antes (40 refs)</th><th>Índice agora (994 refs)</th></tr></thead>
+      <tbody>
+        <tr><td>1 compra/ano</td><td>949</td><td>R$ 9,13 mi</td><td>65,2</td><td>95,8</td></tr>
+        <tr><td>2 a 3</td><td>633</td><td>R$ 12,99 mi</td><td>62,6</td><td>89,2</td></tr>
+        <tr><td>4 a 11</td><td>272</td><td>R$ 10,26 mi</td><td>69,0</td><td>87,0</td></tr>
+        <tr><td>12 ou mais</td><td>19</td><td>R$ 3,02 mi</td><td>56,9</td><td>85,7</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Bases diferentes: a coluna antiga indexa contra a tabela padrão, a nova contra o preço mediano praticado. O que importa é a <em>ordem</em>. Na base ampliada ela é monotônica — quem compra mais paga menos, exatamente como deveria. <strong>A inversão era artefato da amostra de 40 referências.</strong> Não leve esse argumento para a apresentação aos representantes; ele não sobrevive à pergunta.</p>
+
+  <h3>O que sobra é a conta do benefício</h3>
+  <p>O espaço inteiro entre o pior e o melhor cliente é de <strong>10,1 pontos</strong> de preço. Nivelar a carteira comum ao índice de quem compra 12 vezes por ano custa cerca de <strong>R$ 1,6 milhão por ano</strong> — 5,0% sobre R$ 32,4 milhões, e <strong>3,8 vezes</strong> o orçamento de premiação de R$ 423,5 mil.</p>
+  <p>Com a margem de 15% da estrutura da Raiz de Custos, cinco pontos de preço exigem <strong>+50% de volume</strong> só para manter o lucro absoluto. A campanha promete 2,2× indo de uma para três compras: cabe. Mas cabe apenas <em>se</em> a frequência subir. Hoje o regulamento entrega o preço ao cliente e cobra a contrapartida do representante. <strong>O cliente que recebe a Tabela Gestor não assume nenhuma obrigação de comprar mais.</strong> Se ele mantiver uma compra por ano com 5% a menos de preço, a campanha é perda pura.</p>
+</section>
+
+<!-- ================= 5 ================= -->
+<section class="finding">
+  <span class="fnum">ACHADO 05</span>
+  <h2>O que a base mostra que funciona é o Clube</h2>
+  <p>O argumento de que “o Clube compra 5,56× contra 2,49×” tem viés de seleção óbvio: entra no Clube quem já comprava mais. Então testei diferente — peguei a coorte que existia em set/24–ago/25, separei por frequência <em>naquele</em> ano, e segui cada grupo no ano seguinte. Comparação pareada, mesmo ponto de partida.</p>
+
+  <figure>
+    <figcaption>Variação de faturamento no ano seguinte, por frequência de partida</figcaption>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--neg)"></i>Sem contrato Clube</span>
+      <span><i class="sw" style="background:var(--pos)"></i>Com contrato Clube</span>
+    </div>
+    <svg viewBox="0 0 760 322" role="img" aria-label="Variação de faturamento por faixa de frequência: 1 compra, sem Clube menos 46,2% contra Clube mais 81,2%; 2 a 3, menos 46,1% contra mais 7,8%; 4 a 11, menos 48,5% contra menos 22,5%; 12 ou mais, menos 42,2% contra mais 28,7%">
+      <line x1="298" y1="18" x2="298" y2="300" stroke="var(--rule-hard)" stroke-width="1"></line>
+      <text x="298" y="312" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="var(--ink-3)" text-anchor="middle">0%</text>
+
+      <!-- 1 compra -->
+      <text x="0" y="34" font-family="'IBM Plex Sans', sans-serif" font-size="12.5" font-weight="600" fill="var(--ink)">1 compra/ano <tspan font-family="'IBM Plex Mono', monospace" font-size="10.5" font-weight="400" fill="var(--ink-3)">· n = 1.048 · 25</tspan></text>
+      <rect x="81.3" y="42" width="216.7" height="18" fill="var(--neg)" rx="2"></rect>
+      <rect x="298"  y="64" width="380.8" height="18" fill="var(--pos)" rx="2"></rect>
+      <text x="73.3" y="55.5" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="600" fill="var(--neg)" text-anchor="end">−46,2%</text>
+      <text x="686.8" y="77.5" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="600" fill="var(--pos)">+81,2%</text>
+
+      <!-- 2-3 -->
+      <text x="0" y="106" font-family="'IBM Plex Sans', sans-serif" font-size="12.5" font-weight="600" fill="var(--ink)">2 a 3 compras <tspan font-family="'IBM Plex Mono', monospace" font-size="10.5" font-weight="400" fill="var(--ink-3)">· n = 763 · 50</tspan></text>
+      <rect x="81.8" y="114" width="216.2" height="18" fill="var(--neg)" rx="2"></rect>
+      <rect x="298"  y="136" width="36.6"  height="18" fill="var(--pos)" rx="2"></rect>
+      <text x="73.8" y="127.5" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="600" fill="var(--neg)" text-anchor="end">−46,1%</text>
+      <text x="342.6" y="149.5" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="600" fill="var(--pos)">+7,8%</text>
+
+      <!-- 4-11 -->
+      <text x="0" y="178" font-family="'IBM Plex Sans', sans-serif" font-size="12.5" font-weight="600" fill="var(--ink)">4 a 11 compras <tspan font-family="'IBM Plex Mono', monospace" font-size="10.5" font-weight="400" fill="var(--ink-3)">· n = 298 · 57</tspan></text>
+      <rect x="70.6"  y="186" width="227.4" height="18" fill="var(--neg)" rx="2"></rect>
+      <rect x="192.5" y="208" width="105.5" height="18" fill="var(--pos)" rx="2"></rect>
+      <text x="62.6"  y="199.5" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="600" fill="var(--neg)" text-anchor="end">−48,5%</text>
+      <text x="184.5" y="221.5" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="600" fill="var(--pos)" text-anchor="end">−22,5%</text>
+
+      <!-- 12+ -->
+      <text x="0" y="250" font-family="'IBM Plex Sans', sans-serif" font-size="12.5" font-weight="600" fill="var(--ink)">12 ou mais <tspan font-family="'IBM Plex Mono', monospace" font-size="10.5" font-weight="400" fill="var(--ink-3)">· n = 11 · 7</tspan></text>
+      <rect x="100.1" y="258" width="197.9" height="18" fill="var(--neg)" rx="2"></rect>
+      <rect x="298"   y="280" width="134.6" height="18" fill="var(--pos)" rx="2"></rect>
+      <text x="92.1"  y="271.5" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="600" fill="var(--neg)" text-anchor="end">−42,2%</text>
+      <text x="440.6" y="293.5" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="600" fill="var(--pos)">+28,7%</text>
+    </svg>
+    <p class="src">Coorte de set/24–ago/25 seguida em set/25–ago/26 · carteira comum · CNPJ raiz</p>
+  </figure>
+
+  <div class="scroller">
+    <table>
+      <caption>Retenção da mesma coorte</caption>
+      <thead><tr><th>Frequência em 24/25</th><th>Sem Clube</th><th>Com Clube</th><th>Diferença</th></tr></thead>
+      <tbody>
+        <tr><td>1 compra/ano</td><td class="num-neg">36,0%</td><td class="num-pos">96,0%</td><td>+60 p.p.</td></tr>
+        <tr><td>2 a 3 compras</td><td>68,7%</td><td class="num-pos">96,0%</td><td>+27 p.p.</td></tr>
+        <tr><td>4 a 11 compras</td><td>87,6%</td><td class="num-pos">100%</td><td>+12 p.p.</td></tr>
+        <tr><td>12 ou mais</td><td>100%</td><td>100%</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Controlando pela frequência de partida, o Clube ganha em todas as faixas, e ganha <em>mais</em> exatamente onde a campanha quer atuar: o cliente de uma compra por ano vai de 36% para 96% de retenção, e de −46% para +81% de faturamento. Os grupos do Clube são pequenos (25, 50, 57 e 7 clientes) e o viés de seleção não desaparece — quem assina já tinha intenção de comprar. Mas a diferença de trajetória é de 51 pontos percentuais no agregado, e nenhuma seleção plausível explica isso sozinha.</p>
+
+  <p>A diferença de desenho entre os dois instrumentos é o ponto: <strong>o Clube tem contrapartida do cliente; a Tabela Gestor não tem.</strong> São 163 clientes no Clube hoje, 8,7% da carteira comum, comprando 5,13 vezes por ano contra 2,00 dos demais, com faturamento médio de R$ 33,6 mil contra R$ 15,7 mil — e ticket <em>menor</em> (R$ 6,5 mil contra R$ 7,9 mil), o que confirma a tese de frequência. Dobrar o Clube para 326 contratos, ao delta médio observado de R$ 17,8 mil, vale <strong>+R$ 2,9 milhões</strong> — mais que toda a sensibilidade da régua de positivação no modelo (R$ 0,2 a 2,0 mi).</p>
+</section>
+
+<hr class="rule">
+
+<!-- ================= DIRETRIZES ================= -->
+<section class="finding" style="margin-top:0">
+  <h2>Diretrizes</h2>
+  <p class="col">Em ordem de urgência. As três primeiras são desta semana — o Ciclo 1 já está correndo.</p>
+
+  <ol class="directives">
+    <li>
+      <p class="dhead">Congelar a carteira hoje, com data retroativa a 01/09</p>
+      <p>Não espere a automação. Rode o <em>snapshot</em> e grave em tabela ou planilha assinada, com os 1.873 clientes por CNPJ raiz. Abra a janela de contestação de 30 dias a partir da divulgação, não do congelamento. Sem denominador travado, qualquer apuração de janeiro será contestada cliente a cliente — e o representante ganha a discussão.</p>
+      <div class="meta"><span>Prazo <b>05/09</b></span><span>Responsável <b>TI + Comercial</b></span><span>Bloqueia <b>toda a apuração</b></span></div>
+    </li>
+    <li>
+      <p class="dhead">Criar <span class="mono">AD_CONTAPOSIT</span> antes do primeiro fechamento parcial</p>
+      <p>Sem o campo, as TOPs 3226 (Venda Site Mundo UD) e 3244 (Venda Item Trocado) entram na positivação e inflam o numerador de quem tem e-commerce na base. É um <em>ALTER TABLE</em> e uma carga.</p>
+      <div class="meta"><span>Prazo <b>15/09</b></span><span>Responsável <b>TI</b></span><span>Bloqueia <b>Fase 2</b></span></div>
+    </li>
+    <li>
+      <p class="dhead">Declarar o Ciclo 1 como ciclo de calibragem — por escrito, aos representantes</p>
+      <p>A Fase 4 (trava no ato do pedido) não existe e não vai existir até dezembro. Na prática o Ciclo 1 já apura sem retirar benefício de ninguém; o que falta é dizer isso. Apure, publique o painel mensal, e comunique que as réguas do Ciclo 2 serão fixadas com o dado real até <strong>15/01/2027</strong> — duas semanas antes do prazo de 31/01 do regulamento, para dar tempo de comunicar.</p>
+      <div class="meta"><span>Prazo <b>10/09</b></span><span>Responsável <b>Ricardo</b></span><span>Risco se não fizer <b>alto</b></span></div>
+    </li>
+    <li>
+      <p class="dhead">Tirar a meta do gatilho da tabela</p>
+      <p>Registrei essa recomendação antes com dado histórico; agora ela tem número do Ciclo 1: <strong>1 aprovado em 27</strong>. Uma régua que reprova 96% não regula comportamento, apenas antecipa que ninguém vai levar a sério. Deixe a meta valendo integralmente na premiação, onde ela discrimina bem, e mantenha só a positivação como gatilho da Tabela Gestor.</p>
+      <p>Se a decisão for mantê-la, então <em>antes</em>: redistribua a meta proporcionalmente ao histórico de cada representante (hoje Edson e Milton têm a mesma meta com desempenhos de R$ 0,83 e R$ 2,05 mi) e tire os 58 representantes sem faturamento do denominador do canal.</p>
+      <div class="meta"><span>Decisão até <b>30/09</b></span><span>Responsável <b>Ricardo</b></span><span>Impacto <b>27 reps</b></span></div>
+    </li>
+    <li>
+      <p class="dhead">Régua de positivação em 30%, e em número absoluto para carteira pequena</p>
+      <p>A mediana individual dos 27 representantes relevantes é 30%. Com 45%, quatro passam; com 30%, quinze. E abaixo de 20 clientes de carteira, troque o percentual por um alvo em número de clientes — hoje sete representantes “passam” positivando dois de quatro, o que corrói a legitimidade da régua para quem tem 126 clientes.</p>
+      <div class="meta"><span>Decisão até <b>30/09</b></span><span>Responsável <b>Ricardo + Marcos</b></span><span>Passariam <b>15 de 27</b></span></div>
+    </li>
+    <li>
+      <p class="dhead">Adicionar retenção de valor ao lado da positivação</p>
+      <p>Uma segunda condição, medida sobre a mesma carteira congelada: faturamento do ciclo ≥ 85% do mesmo quadrimestre do ano anterior. Custa uma coluna na <span class="mono">AD_CAMP_APURACAO</span> e fecha o furo que hoje deixa 98 clientes positivarem enquanto caem 30% ou mais. Enquanto a régua for binária, positivação sobe e faturamento cai — foi o que aconteceu em mai–ago/26.</p>
+      <div class="meta"><span>Prazo <b>Ciclo 2</b></span><span>Responsável <b>TI + Comercial</b></span><span>Cobre <b>R$ 10,4 mi de contração</b></span></div>
+    </li>
+    <li>
+      <p class="dhead">Amarrar a Tabela Gestor ao contrato Clube</p>
+      <p>É a mudança de maior retorno esperado e a única sustentada por evidência de coorte. Reduza o relógio de 4 para <strong>2 ciclos</strong>: no terceiro, ou o cliente assina o Clube, ou volta para a tabela anterior. A comissão de 9% sobre a Varejo para contratos novos já está no regulamento — mova a régua do representante para <em>contratos Clube assinados no ciclo</em>, uma métrica que ele controla, que tem contrapartida do cliente e que a base mostra funcionar.</p>
+      <p>Meta sugerida para o Ciclo 1: <strong>+80 contratos</strong> no canal (de 163 para 243), aproximadamente 2 por representante ativo.</p>
+      <div class="meta"><span>Decisão até <b>30/09</b></span><span>Responsável <b>Ricardo</b></span><span>Valor <b>+R$ 2,9 mi se dobrar</b></span></div>
+    </li>
+    <li>
+      <p class="dhead">Reconciliar o CRM por CNPJ antes de operar reativação por lá</p>
+      <p>Três correções, nesta ordem: (a) casar os 1.570 registros do <em>Ciclo de Recompra</em> contra os 1.873 da carteira congelada pelo CNPJ — 77% já trazem CNPJ e código do parceiro, os 23% restantes precisam ser identificados ou removidos; (b) atribuir responsável, já que 49% estão sem dono e o representante não tem fila própria no app; (c) separar o funil de <em>Reativação</em> B2B do funil de lead de marketing — são 10.224 registros para cerca de 1.800 inativos reais.</p>
+      <p>Há erro de vínculo em 24% da amostra: a oportunidade “Baratão das Utilidades” aponta para o contato “J da S Lima Comércio”. Qualquer automação disparada hoje fala com a empresa errada.</p>
+      <div class="meta"><span>Prazo <b>30/09</b></span><span>Responsável <b>Marketing + Comercial</b></span><span>Bloqueia <b>plano de reativação</b></span></div>
+    </li>
+  </ol>
+</section>
+
+<hr class="rule">
+
+<section class="finding" style="margin-top:0">
+  <h2>Duas coisas que ainda não sei</h2>
+  <p><strong>A causalidade do Clube.</strong> A coorte pareada é forte, mas não é experimento. O teste que resolve: no Ciclo 1, ofereça o Clube a uma lista aleatória de clientes de 1 compra e compare com uma lista de controle da mesma faixa. Cem de cada lado dão resposta em quatro meses e valem mais que qualquer modelagem.</p>
+  <p><strong>A margem real por grupo de produto.</strong> O <span class="mono">CMV</span> da base não é utilizável — margem apurada de 2% em 2024 e 8,9% em 2025. Toda a conta de custo do benefício acima depende da carga de 15% da <em>Raiz de Custos rev75</em>, que não está validada contra o ERP. Enquanto isso não fechar, o custo de R$ 1,6 milhão da Tabela Gestor é a melhor estimativa disponível, não um número auditado.</p>
+</section>
+
+<footer>
+  <p><strong>Apuração.</strong> Sankhya Oracle, schema <span class="mono">NITRONPLASTPRD</span>, consultado em 03/09/2026 às 10h24. Última nota na base: 03/09/2026. Canal de representantes = <span class="mono">TGFVEN.TIPVEND = 'R'</span>, ativo, excluído <span class="mono">CODVEND 137</span> (e-commerce). Clientes consolidados por <span class="mono">NVL(CODPARCMATRIZ, CODPARC)</span>, Key Accounts excluídos por <span class="mono">AD_CODGRUKEY IS NOT NULL</span>, TOPs 3226 e 3244 excluídas manualmente na ausência de <span class="mono">AD_CONTAPOSIT</span>. CRM: Go High Level, sub-conta Nitron, pipelines <em>Ciclo de Recompra</em> e <em>Reativação</em>, amostra de 100 oportunidades.</p>
+  <p style="margin-top:12px">As queries estão versionadas em <span class="mono">campanha-gestor-carteira/queries/</span> no repositório, uma por achado, para reprodução.</p>
+</footer>
+
+</div>
