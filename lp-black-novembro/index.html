@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0d0d0f">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800;1,900&family=Yellowtail&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800;1,900&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0d0d0f;
@@ -55,10 +55,7 @@
     padding:22px 0 18px;position:relative;z-index:1
   }
   .top-grid{display:grid;grid-template-columns:1fr;justify-items:center;gap:10px}
-  .logo{width:min(46vw,230px);height:auto}
-  .headline{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%}
-  .neon-tag{width:min(84vw,460px);height:auto;transform:rotate(-3deg);
-    filter:drop-shadow(0 0 3px var(--neon)) drop-shadow(0 0 12px rgba(63,230,238,.55))}
+  .kv-logo{width:min(80vw,400px);height:auto;margin:-4px 0 -6px}
   .dates{
     font-family:"Anton",Impact,sans-serif;text-transform:uppercase;letter-spacing:.02em;line-height:.95;
     font-size:clamp(26px,7.4vw,40px);color:#0f2a2c;
@@ -95,6 +92,7 @@
     right:max(-70px, -14vw);bottom:calc(var(--bar) - 6px);
     height:min(56%, 520px);width:auto;
     filter:drop-shadow(0 18px 30px rgba(0,0,0,.35));
+    transform:translateY(7%); /* compensa a margem transparente na base do PNG */
   }
 
   .scroll-cue{
@@ -118,28 +116,21 @@
     opacity:calc((var(--p) - .6) * 2.5);transform:translateY(calc((1 - var(--p)) * 14px))}
   .is-collapsed .bar{pointer-events:auto}
   .bar__brand{display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none;min-width:0}
-  .bar__logo{height:26px;width:auto}
-  .bar__title{display:flex;align-items:baseline;gap:6px;white-space:nowrap}
-  .bar__title .s{font-family:"Yellowtail",cursive;font-size:28px;line-height:1;color:#fff;text-shadow:0 0 8px rgba(63,230,238,.7)}
-  .bar__title .c{font-weight:600;letter-spacing:.14em;font-size:15px;color:var(--neon);text-shadow:0 0 8px rgba(63,230,238,.7)}
+  .bar__logo{height:46px;width:auto;max-width:52vw;object-fit:contain}
   .bar__meta{display:flex;gap:6px;align-items:center;white-space:nowrap;font-size:12px;font-weight:600}
   .bar__meta b{font-weight:900;font-style:italic}
   .pill{padding:5px 10px;border-radius:999px;line-height:1}
   .pill--teal{background:var(--teal);color:var(--ink)}
   .pill--line{border:1px solid rgba(63,230,238,.6);color:var(--neon)}
 
-  @media (max-width:560px){ .bar__logo{display:none} .bar__meta{flex-direction:column;align-items:stretch;gap:3px;font-size:10.5px} .bar__meta .pill{padding:4px 8px;text-align:center} }
-  @media (max-width:360px){ .bar__title .c{font-size:13px} }
+  @media (max-width:560px){ .bar__logo{height:40px} .bar__meta{flex-direction:column;align-items:stretch;gap:3px;font-size:10.5px} .bar__meta .pill{padding:4px 8px;text-align:center} }
 
   /* Desktop */
   @media (min-width:880px){
     .band-top{padding:26px 0 22px}
-    .top-grid{grid-template-columns:auto 1fr;grid-template-areas:"logo logo" "dates tag";align-items:center;justify-items:start;column-gap:28px}
-    .logo{grid-area:logo;justify-self:center;width:250px}
-    .headline{display:contents}
+    .top-grid{grid-template-columns:auto auto;grid-template-areas:"dates logo";align-items:center;justify-content:start;column-gap:40px}
+    .kv-logo{grid-area:logo;width:min(40vw,480px);margin:0}
     .dates{grid-area:dates;font-size:58px;text-align:left}
-    .dates small{display:inline}
-    .neon-tag{grid-area:tag;width:470px}
     .offer{max-width:52%}
     .band-bottom{padding-top:36px}
     .tree{right:max(0px, calc((100vw - 1180px) / 2));height:min(88%, 760px)}
@@ -151,7 +142,7 @@
     .offer{max-width:none}
     .sub,.sub2{max-width:52vw}
   }
-  @media (max-width:879px) and (max-height:700px){ .logo{width:150px} .neon-tag{width:min(70vw,330px)} .band-bottom{padding-top:14px} .sub2{display:none} }
+  @media (max-width:879px) and (max-height:700px){ .kv-logo{width:min(64vw,300px)} .band-bottom{padding-top:14px} .sub2{display:none} }
 
   /* ================= VITRINE ================= */
   main{max-width:1180px;margin:0 auto;padding:40px 16px 56px}
@@ -222,7 +213,7 @@
   .rules strong{display:block;color:#fff;font-size:15px}
   .rules span{font-size:14px;color:#b9b9c0}
   .legal{margin-top:28px;padding-top:20px;border-top:1px solid #26262b;font-size:12px;color:#85858c;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
-  .legal img{height:30px;width:auto}
+  .legal img{height:56px;width:auto}
 
   @media (prefers-reduced-motion:reduce){ *{animation:none!important;scroll-behavior:auto!important} }
 </style>
@@ -236,20 +227,8 @@
   <div class="hero__inner">
     <div class="band-top">
       <div class="wrap top-grid">
-        <img class="logo" src="assets/acelera-nitron.webp" alt="Acelera Nitron" width="654" height="140">
-        <div class="headline">
-          <svg class="neon-tag" viewBox="0 0 620 300" role="img" aria-label="Black Novembro">
-            <g fill="none" stroke="#3fe6ee" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M40 40 H470 L540 105 V195 L470 260 H40 Q16 260 16 236 V64 Q16 40 40 40 Z"/>
-              <circle cx="498" cy="150" r="13"/>
-            </g>
-            <path d="M510 146 C 540 128, 560 168, 588 150 S 612 126, 614 134" fill="none" stroke="#f2feff" stroke-width="6" stroke-linecap="round"/>
-            <text x="250" y="150" text-anchor="middle" font-family="Yellowtail, cursive" font-size="132" fill="#f7feff" stroke="#bff8fb" stroke-width="1">Black</text>
-            <text x="252" y="236" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="500" font-size="62" letter-spacing="6"
-                  textLength="400" lengthAdjust="spacingAndGlyphs" fill="#0f2a2c" stroke="#3fe6ee" stroke-width="3.2">NOVEMBRO</text>
-          </svg>
-          <div class="dates">03/11 <small>A</small> 20/11</div>
-        </div>
+        <img class="kv-logo" src="https://produto.nitron.com.br/logo-02.png" alt="Acelera Nitron Black Novembro" width="1505" height="910">
+        <div class="dates">03/11 <small>A</small> 20/11</div>
       </div>
     </div>
 
@@ -267,7 +246,7 @@
       </div>
     </div>
 
-    <img class="tree" src="assets/arvore-pdv.webp" alt="Exposição de produtos Nitron no PDV montada em formato de árvore de Natal" width="760" height="1049">
+    <img class="tree" src="https://produto.nitron.com.br/Arvore.png" onerror="this.onerror=null;this.src='assets/arvore-pdv.webp'" alt="Exposição de produtos Nitron no PDV montada em formato de árvore de Natal" width="1024" height="1536">
   </div>
 
   <a class="scroll-cue" href="#produtos" aria-label="Ver produtos participantes">
@@ -278,8 +257,7 @@
   <div class="bar">
     <div class="wrap bar__in">
       <a href="#topo" class="bar__brand">
-        <img class="bar__logo" src="assets/acelera-nitron.webp" alt="Acelera Nitron" width="654" height="140">
-        <span class="bar__title"><span class="s">Black</span><span class="c">NOVEMBRO</span></span>
+        <img class="bar__logo" src="https://produto.nitron.com.br/logo-01.png" alt="Acelera Nitron Black Novembro" width="1398" height="360">
       </a>
       <div class="bar__meta"><span class="pill pill--teal"><b>45% OFF</b> Padrão</span><span class="pill pill--line"><b>15% OFF</b> Acelera</span></div>
     </div>
@@ -308,7 +286,7 @@
     </div>
 
     <aside class="bonus">
-      <div class="bonus__img"><img src="assets/bonificado-nitron-mob.webp" alt="Estante de madeira da linha Nitron Mob, um dos itens bonificados" width="493" height="900" loading="lazy"></div>
+      <div class="bonus__img"><img src="https://produto.nitron.com.br/Estante%20de%20Madeira%20com%20Conectores%20Cinza%20(1).png" onerror="this.onerror=null;this.src='assets/bonificado-nitron-mob.webp'" alt="Estante de madeira com conectores cinza da linha Nitron Mob, um dos itens bonificados" width="1254" height="1254" loading="lazy"></div>
       <div class="bonus__txt">
         <span class="bonus__kicker">Bônus em todo pedido</span>
         <h3>Ganhe <em>5% bonificado</em> na linha Nitron Mob</h3>
@@ -345,7 +323,7 @@
       <li><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><div><strong>Vigência: de 03/11 a 20/11</strong><span>Condições válidas somente para pedidos realizados dentro desse período.</span></div></li>
     </ul>
     <div class="legal">
-      <img src="assets/acelera-nitron.webp" alt="Acelera Nitron" width="654" height="140">
+      <img src="https://produto.nitron.com.br/logo-01.png" alt="Acelera Nitron Black Novembro" width="1398" height="360">
       <span>© Nitron · Imagens meramente ilustrativas · Preços e condições sujeitos ao regulamento acima.</span>
     </div>
   </div>
