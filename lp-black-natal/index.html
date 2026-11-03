@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Black Natal Nitron</title>
+<meta name="description" content="Black Natal Nitron: 15% OFF nos 51 itens mais vendidos. Válido de 03/11 a 10/12.">
+<meta name="theme-color" content="#0b0b0d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0b0d;
+    --bg-2:#141417;
+    --card:#ffffff;
+    --ink:#16161a;
+    --muted:#6b6b73;
+    --line:#e7e5e1;
+    --paper:#f6f4f0;
+    --gold:#e8b84a;
+    --gold-2:#ffd879;
+    --red:#d7263d;
+    --green:#1f7a4d;
+    --bar:64px;
+    --hero-h:max(100svh, 620px);
+    --p:0; /* progresso do scroll do hero (0 → 1) */
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Manrope",system-ui,sans-serif;line-height:1.45}
+  img{max-width:100%;display:block}
+
+  /* ============ HERO (achata e vira menu fixo) ============ */
+  .hero{
+    position:sticky;
+    top:calc(var(--bar) - var(--hero-h));
+    height:var(--hero-h);
+    z-index:50;
+    color:#fff;
+    background:
+      radial-gradient(1200px 600px at 75% 40%, rgba(232,184,74,.18), transparent 60%),
+      radial-gradient(700px 500px at 10% 90%, rgba(215,38,61,.22), transparent 60%),
+      var(--bg);
+    overflow:hidden;
+    box-shadow:0 8px 24px rgba(0,0,0, calc(var(--p) * .35));
+  }
+  .snow{position:absolute;inset:0;pointer-events:none;opacity:calc(1 - var(--p))}
+  .snow i{position:absolute;top:-10px;width:4px;height:4px;border-radius:50%;background:#fff;opacity:.5;animation:fall linear infinite}
+  @keyframes fall{to{transform:translateY(110vh)}}
+
+  .hero__inner{
+    position:relative;height:calc(100% - var(--bar));
+    max-width:1180px;margin:0 auto;padding:28px 20px 84px;
+    display:grid;grid-template-columns:1fr;grid-template-rows:auto 1fr;align-items:center;gap:8px;
+    opacity:calc(1 - var(--p) * 1.6);
+    transform:scale(calc(1 - var(--p) * .08));
+    transform-origin:50% 100%;
+  }
+  .brand{font-weight:800;letter-spacing:.24em;font-size:12px;text-transform:uppercase;color:var(--gold)}
+  .hero h1{
+    font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;
+    font-size:clamp(52px, 15vw, 132px);line-height:.88;margin:10px 0 14px;letter-spacing:.01em
+  }
+  .hero h1 .gold{color:var(--gold);display:block}
+  .hero__lead{font-size:clamp(15px,3.8vw,19px);max-width:30ch;margin:0 0 18px;color:#e9e7e2}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;background:rgba(255,255,255,.05)}
+  .chip--hot{background:var(--red);border-color:var(--red)}
+  .tree{width:100%;height:100%;max-height:52vh;min-height:220px;display:flex;justify-content:center;align-items:flex-end}
+  .tree svg{height:100%;width:auto;max-width:100%;filter:drop-shadow(0 20px 40px rgba(0,0,0,.5))}
+  .twinkle{animation:tw 1.8s ease-in-out infinite}
+  @keyframes tw{50%{opacity:.25}}
+
+  .scroll-cue{
+    position:absolute;left:50%;bottom:calc(var(--bar) + 10px);transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    color:#fff;text-decoration:none;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    opacity:calc(1 - var(--p) * 3);z-index:2
+  }
+  .scroll-cue span.arrow{
+    width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+    background:var(--gold);color:var(--bg);animation:bob 1.6s ease-in-out infinite
+  }
+  @keyframes bob{50%{transform:translateY(8px)}}
+
+  /* Barra (menu fixo) */
+  .bar{
+    position:absolute;left:0;right:0;bottom:0;height:var(--bar);
+    display:flex;align-items:center;
+    background:rgba(11,11,13, calc(var(--p)));
+    border-top:1px solid rgba(255,255,255, calc(.08 * (1 - var(--p))));
+  }
+  .bar__in{max-width:1180px;width:100%;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .bar__title{
+    font-family:"Anton",Impact,sans-serif;text-transform:uppercase;font-size:24px;letter-spacing:.02em;white-space:nowrap;
+    opacity:calc((var(--p) - .6) * 2.5);
+    transform:translateY(calc((1 - var(--p)) * 14px))
+  }
+  .bar__title b{color:var(--gold);font-weight:400}
+  .bar__meta{font-size:12px;font-weight:700;display:flex;gap:8px;align-items:center;white-space:nowrap;
+    opacity:calc((var(--p) - .6) * 2.5)}
+  .bar__meta .off{background:var(--red);padding:4px 9px;border-radius:999px}
+  .bar__meta .date{color:#cfcac0}
+
+  @media (min-width:880px){
+    .hero__inner{grid-template-columns:1.05fr .95fr;grid-template-rows:1fr;padding-top:0}
+    .tree{max-height:78%;align-self:end}
+  }
+  @media (max-width:420px){
+    .bar__meta .date{display:none}
+    .bar__title{font-size:21px}
+  }
+  @media (max-height:700px) and (max-width:879px){
+    .hero__lead{display:none}
+  }
+
+  /* ============ VITRINE ============ */
+  main{max-width:1180px;margin:0 auto;padding:40px 16px 56px}
+  #produtos{scroll-margin-top:calc(var(--bar) + 12px)}
+  .sec-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:16px;margin-bottom:18px}
+  .sec-head h2{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(30px,7vw,46px);line-height:1;margin:0}
+  .sec-head p{margin:6px 0 0;color:var(--muted);font-size:15px}
+  .search{position:relative;flex:1 1 260px;max-width:360px}
+  .search input{width:100%;font:inherit;font-size:16px;padding:12px 14px 12px 40px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+  .search input:focus{outline:2px solid var(--gold);outline-offset:1px}
+  .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;color:var(--muted);margin:0 0 20px;padding:12px 14px;background:#fff;border:1px solid var(--line);border-radius:12px}
+  .legend b{color:var(--ink)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  @media (min-width:640px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}}
+  @media (min-width:1000px){.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+  .thumb{position:relative;aspect-ratio:1/1;background:linear-gradient(180deg,#faf8f4,#efebe4);display:grid;place-items:center}
+  .thumb img,.thumb svg{width:78%;height:78%;object-fit:contain}
+  .tag{position:absolute;top:8px;font-size:11px;font-weight:800;padding:4px 8px;border-radius:999px;line-height:1}
+  .tag--off{left:8px;background:var(--red);color:#fff}
+  .tag--mob{right:8px;background:var(--green);color:#fff}
+  .info{padding:12px 12px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .sku{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em}
+  .name{font-size:14px;font-weight:700;line-height:1.25;margin:0;min-height:2.5em}
+  .min{font-size:12px;color:var(--ink);background:#fbf3df;border-radius:8px;padding:5px 8px;align-self:flex-start;font-weight:600}
+  .min b{font-weight:800}
+  .prices{margin:4px 0 0;display:flex;flex-direction:column;gap:4px;margin-top:auto}
+  .pr{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:12px}
+  .pr dt{color:var(--muted)}
+  .pr dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums}
+  .pr--black{background:var(--bg);color:#fff;border-radius:10px;padding:8px 10px;margin-top:2px;flex-direction:column;align-items:flex-start;gap:2px}
+  .pr--black dt{color:var(--gold-2);font-weight:800;text-transform:uppercase;font-size:11px;letter-spacing:.04em}
+  .pr--black dd{font-size:17px;color:#fff}
+  @media (min-width:640px){.name{font-size:15px}.pr{font-size:13px}.pr--black dd{font-size:19px}}
+  .empty{display:none;text-align:center;padding:40px 0;color:var(--muted)}
+
+  /* ============ REGULAMENTO ============ */
+  footer{background:var(--bg);color:#e9e7e2}
+  .foot{max-width:1180px;margin:0 auto;padding:48px 20px 32px}
+  .foot h2{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(28px,6vw,40px);margin:0 0 6px;color:#fff}
+  .foot > p{margin:0 0 24px;color:#a9a59c}
+  .rules{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:10px}
+  @media (min-width:720px){.rules{grid-template-columns:1fr 1fr}}
+  .rules li{display:flex;gap:12px;align-items:flex-start;background:var(--bg-2);border:1px solid #24242a;border-radius:14px;padding:14px 16px}
+  .rules .ic{flex:0 0 36px;height:36px;border-radius:10px;background:rgba(232,184,74,.14);color:var(--gold);display:grid;place-items:center;font-weight:800;font-size:13px}
+  .rules strong{display:block;color:#fff;font-size:15px}
+  .rules span{font-size:14px;color:#bdb8ae}
+  .legal{margin-top:28px;padding-top:20px;border-top:1px solid #24242a;font-size:12px;color:#85817a;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;scroll-behavior:auto!important}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="topo">
+  <div class="snow" aria-hidden="true"></div>
+
+  <div class="hero__inner">
+    <div>
+      <div class="brand">Nitron apresenta</div>
+      <h1>Black Natal <span class="gold">Nitron</span></h1>
+      <p class="hero__lead">15% OFF nos 51 produtos mais vendidos. Monte a sua árvore no PDV e venda mais neste fim de ano.</p>
+      <div class="chips">
+        <span class="chip chip--hot">15% OFF</span>
+        <span class="chip">51 itens Curva A</span>
+        <span class="chip">03/11 a 10/12</span>
+      </div>
+    </div>
+    <div class="tree" id="tree" role="img" aria-label="Exposição dos produtos Nitron no PDV montada no formato de árvore de Natal"></div>
+  </div>
+
+  <a class="scroll-cue" href="#produtos" aria-label="Ver produtos participantes">
+    Produtos participantes
+    <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg></span>
+  </a>
+
+  <div class="bar">
+    <div class="bar__in">
+      <a href="#topo" class="bar__title" style="color:inherit;text-decoration:none">Black Natal <b>Nitron</b></a>
+      <div class="bar__meta"><span class="off">15% OFF</span><span class="date">até 10/12</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= VITRINE ================= -->
+<main>
+  <section id="produtos">
+    <div class="sec-head">
+      <div>
+        <h2>Produtos participantes</h2>
+        <p><span id="count">51</span> itens mais vendidos da Nitron (Curva A)</p>
+      </div>
+      <label class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Buscar produto ou código" autocomplete="off" aria-label="Buscar produto ou código">
+      </label>
+    </div>
+
+    <div class="legend">
+      <span><i class="dot" style="background:#c9c5bd"></i><b>Tabela Padrão</b></span>
+      <span><i class="dot" style="background:#c9c5bd"></i><b>Tabela Acelera</b></span>
+      <span><i class="dot" style="background:var(--bg)"></i><b>Black Natal</b> (preço da campanha)</span>
+      <span>Valores por pacote · Fardo mínimo indicado em cada produto</span>
+    </div>
+
+    <div class="grid" id="grid"></div>
+    <p class="empty" id="empty">Nenhum produto encontrado.</p>
+  </section>
+</main>
+
+<!-- ================= REGULAMENTO ================= -->
+<footer>
+  <div class="foot">
+    <h2>Regulamento</h2>
+    <p>Confira as condições da campanha Black Natal Nitron.</p>
+    <ul class="rules">
+      <li><div class="ic">%</div><div><strong>15% OFF nos itens selecionados</strong><span>Desconto válido somente para os produtos participantes desta página.</span></div></li>
+      <li><div class="ic">51</div><div><strong>51 itens mais vendidos da Nitron</strong><span>Produtos da Curva A, os campeões de venda do nosso portfólio.</span></div></li>
+      <li><div class="ic">5+</div><div><strong>Mínimo de 5 itens por pedido</strong><span>O pedido precisa ter pelo menos 5 itens participantes para garantir o desconto.</span></div></li>
+      <li><div class="ic">▦</div><div><strong>Compra pelo fardo mínimo</strong><span>O preço promocional vale apenas na compra pelos fardos mínimos de 10, 20 ou 30 pacotes, conforme indicado em cada produto.</span></div></li>
+      <li><div class="ic">★</div><div><strong>Tabelas participantes</strong><span>Válido para clientes das tabelas Gestor, Clube Varejo e Clube Atacado.</span></div></li>
+      <li><div class="ic">+5</div><div><strong>Linha Nitron Mob: 5% bonificado</strong><span>Nos produtos da linha Nitron Mob, você recebe 5% em produtos bonificados.</span></div></li>
+      <li><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><div><strong>Vigência: de 03/11 a 10/12</strong><span>Condições válidas para pedidos realizados dentro desse período.</span></div></li>
+    </ul>
+    <div class="legal">
+      <span>© Nitron · Imagens meramente ilustrativas.</span>
+      <span>Preços e condições sujeitos ao regulamento acima.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* =========================================================
+   DADOS DOS PRODUTOS — substitua pelos dados reais.
+   Campos:
+     cod     : código do produto
+     nome    : descrição
+     linha   : "Nitron Mob" exibe o selo +5% bonificado
+     fardo   : quantidade mínima de pacotes (10, 20 ou 30)
+     padrao  : preço Tabela Padrão
+     acelera : preço Tabela Acelera
+     black   : preço Black Natal
+     img     : (opcional) URL da foto do produto
+   ========================================================= */
+const PRODUTOS = (() => {
+  const linhas = ["Nitron", "Nitron", "Nitron", "Nitron Mob"];
+  const fardos = [10, 20, 30];
+  return Array.from({ length: 51 }, (_, i) => {
+    const padrao = +(18 + ((i * 37) % 120) + ((i * 13) % 100) / 100).toFixed(2);
+    return {
+      cod: String(10100 + i * 7),
+      nome: `Produto Nitron ${String(i + 1).padStart(2, "0")} - descrição do item`,
+      linha: linhas[i % 4],
+      fardo: fardos[i % 3],
+      padrao,
+      acelera: +(padrao * 0.93).toFixed(2),
+      black: +(padrao * 0.85).toFixed(2),
+      img: ""
+    };
+  });
+})();
+
+const brl = v => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+
+/* Imagem de placeholder (pacote) enquanto não há foto */
+function placeholder(p, i) {
+  const cores = ["#d7263d", "#e8b84a", "#1f7a4d", "#16161a", "#2b59c3"];
+  const c = cores[i % cores.length];
+  return `<svg viewBox="0 0 120 120" aria-hidden="true">
+    <ellipse cx="60" cy="108" rx="38" ry="5" fill="rgba(0,0,0,.08)"/>
+    <rect x="24" y="16" width="72" height="90" rx="10" fill="${c}"/>
+    <rect x="24" y="16" width="72" height="18" rx="8" fill="rgba(255,255,255,.18)"/>
+    <rect x="34" y="50" width="52" height="32" rx="6" fill="#fff"/>
+    <text x="60" y="71" text-anchor="middle" font-family="Anton,Impact" font-size="14" fill="${c}">NITRON</text>
+  </svg>`;
+}
+
+function card(p, i) {
+  const mob = /mob/i.test(p.linha || "");
+  const media = p.img
+    ? `<img src="${esc(p.img)}" alt="${esc(p.nome)}" loading="lazy">`
+    : placeholder(p, i);
+  return `<article class="card" data-search="${esc((p.cod + " " + p.nome + " " + (p.linha||"")).toLowerCase())}">
+    <div class="thumb">
+      <span class="tag tag--off">-15%</span>
+      ${mob ? `<span class="tag tag--mob">+5% bonif.</span>` : ""}
+      ${media}
+    </div>
+    <div class="info">
+      <span class="sku">CÓD. ${esc(p.cod)}${mob ? " · NITRON MOB" : ""}</span>
+      <h3 class="name">${esc(p.nome)}</h3>
+      <span class="min">Fardo mín.: <b>${p.fardo} pct</b></span>
+      <dl class="prices">
+        <div class="pr"><dt>Tabela Padrão</dt><dd>${brl(p.padrao)}</dd></div>
+        <div class="pr"><dt>Tabela Acelera</dt><dd>${brl(p.acelera)}</dd></div>
+        <div class="pr pr--black"><dt>Black Natal</dt><dd>${brl(p.black)}</dd></div>
+      </dl>
+    </div>
+  </article>`;
+}
+
+const grid = document.getElementById("grid");
+grid.innerHTML = PRODUTOS.map(card).join("");
+document.getElementById("count").textContent = PRODUTOS.length;
+
+/* Busca */
+const cards = [...grid.children];
+const empty = document.getElementById("empty");
+document.getElementById("q").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase();
+  let n = 0;
+  cards.forEach(c => { const ok = !q || c.dataset.search.includes(q); c.hidden = !ok; if (ok) n++; });
+  empty.style.display = n ? "none" : "block";
+});
+
+/* Árvore de Natal: fardos empilhados como na exposição do PDV */
+(function buildTree() {
+  const rows = [1, 2, 3, 4, 5, 6];
+  const bw = 46, bh = 34, gap = 4, W = rows.at(-1) * (bw + gap) + 20;
+  const cores = ["#d7263d", "#e8b84a", "#1f7a4d", "#f4f1ea", "#b81d31", "#c99a2e"];
+  const top = 60;
+  let s = "", k = 0;
+  rows.forEach((n, r) => {
+    const y = top + r * (bh + gap);
+    const x0 = (W - (n * (bw + gap) - gap)) / 2;
+    for (let j = 0; j < n; j++) {
+      const x = x0 + j * (bw + gap), c = cores[(k++ * 5 + r) % cores.length];
+      const dark = c === "#f4f1ea" ? "#16161a" : "#fff";
+      s += `<g><rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="5" fill="${c}"/>
+        <rect x="${x}" y="${y}" width="${bw}" height="8" rx="4" fill="rgba(255,255,255,.22)"/>
+        <rect x="${x + 9}" y="${y + 14}" width="${bw - 18}" height="10" rx="2" fill="${dark}" opacity=".85"/></g>`;
+    }
+  });
+  // luzes
+  let lights = "";
+  for (let i = 0; i < 18; i++) {
+    const r = 1 + (i % 5), y = top + r * (bh + gap) - 2;
+    const span = rows[r] * (bw + gap);
+    const x = (W - span) / 2 + ((i * 53) % span);
+    lights += `<circle class="twinkle" style="animation-delay:${(i % 6) * .3}s" cx="${x}" cy="${y}" r="3.2" fill="${i % 2 ? "#ffd879" : "#fff"}"/>`;
+  }
+  const baseY = top + rows.length * (bh + gap);
+  const H = baseY + 70;
+  const star = `<path class="twinkle" d="M${W/2} 10l9 19 21 3-15 15 4 21-19-10-19 10 4-21-15-15 21-3z" fill="#ffd879"/>`;
+  const base = `<rect x="${W/2 - 34}" y="${baseY}" width="68" height="30" rx="4" fill="#3a2a1a"/>
+    <rect x="${W/2 - 80}" y="${baseY + 30}" width="160" height="26" rx="6" fill="#1b1b20" stroke="#e8b84a" stroke-width="1.5"/>
+    <text x="${W/2}" y="${baseY + 48}" text-anchor="middle" font-family="Anton,Impact" font-size="14" letter-spacing="2" fill="#e8b84a">BLACK NATAL</text>`;
+  document.getElementById("tree").innerHTML =
+    `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${star}${s}${lights}${base}</svg>`;
+})();
+
+/* Neve */
+(function snow() {
+  const box = document.querySelector(".snow");
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let h = "";
+  for (let i = 0; i < 40; i++) {
+    const size = 2 + (i % 3);
+    h += `<i style="left:${(i * 97) % 100}%;width:${size}px;height:${size}px;animation-duration:${8 + (i % 7)}s;animation-delay:-${(i * 1.3) % 10}s"></i>`;
+  }
+  box.innerHTML = h;
+})();
+
+/* Hero → menu fixo: o progresso do scroll alimenta a variável --p */
+(function heroCollapse() {
+  const hero = document.querySelector(".hero");
+  const bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--bar")) || 64;
+  let ticking = false;
+  function update() {
+    const range = hero.offsetHeight - bar;
+    const p = Math.min(1, Math.max(0, window.scrollY / range));
+    hero.style.setProperty("--p", p.toFixed(3));
+    ticking = false;
+  }
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  addEventListener("resize", update);
+  update();
+})();
+</script>
+</body>
+</html>
