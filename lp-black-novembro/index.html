@@ -38,7 +38,7 @@
     top:calc(var(--bar) - var(--hero-h));
     height:var(--hero-h);
     z-index:50;color:#fff;overflow:hidden;
-    background:var(--teal);
+    background:var(--noise), linear-gradient(180deg, var(--bg) 0%, var(--bg) 16%, #083a3e 36%, #078c93 56%, var(--teal) 72%, #079aa1 100%);
     box-shadow:0 8px 24px rgba(0,0,0, calc(var(--p) * .35));
   }
   .hero__inner{
@@ -49,9 +49,15 @@
   }
   .wrap{max-width:1180px;margin:0 auto;padding:0 20px;width:100%;position:relative}
 
+  /* Luzinhas pisca-pisca */
+  .lights{position:absolute;inset:0;pointer-events:none;z-index:0}
+  .lights i{position:absolute;border-radius:50%;background:var(--c);
+    box-shadow:0 0 4px 1px var(--c), 0 0 14px 3px var(--g);
+    animation:pisca var(--d) ease-in-out var(--dl) infinite;opacity:.2}
+  @keyframes pisca{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1)}}
+
   /* Faixa escura (topo) */
   .band-top{
-    background:var(--noise), radial-gradient(900px 400px at 40% 120%, rgba(8,169,177,.18), transparent 70%), var(--bg);
     padding:22px 0 18px;position:relative;z-index:1
   }
   .top-grid{display:grid;grid-template-columns:1fr;justify-items:center;gap:10px}
@@ -66,7 +72,6 @@
 
   /* Faixa verde (oferta) */
   .band-bottom{
-    background:var(--noise), linear-gradient(180deg,var(--teal) 0%, #079aa1 100%);
     position:relative;padding:22px 0 calc(var(--bar) + 78px);
   }
   .offer{position:relative;z-index:2;max-width:56%}
@@ -137,6 +142,7 @@
   }
   @media (min-width:880px) and (max-height:760px){ .tree{height:84%} .big{font-size:96px} }
   @media (max-width:879px){
+    .hero{background:var(--noise), linear-gradient(180deg, var(--bg) 0%, var(--bg) 8%, #083a3e 22%, #078c93 36%, var(--teal) 48%, #079aa1 100%)}
     .tree{height:auto;width:min(60vw,480px);right:-9vw}
     .scroll-cue{left:20px;transform:none;flex-direction:row-reverse;gap:10px;bottom:calc(var(--bar) + 14px)}
     .offer{max-width:none}
@@ -225,6 +231,7 @@
   <h1 class="sr-only">Black Novembro Acelera Nitron: 45% OFF sobre a Tabela Padrão, 15% OFF sobre a Tabela Acelera e +30 dias de prazo, de 03/11 a 20/11</h1>
 
   <div class="hero__inner">
+    <div class="lights" aria-hidden="true"></div>
     <div class="band-top">
       <div class="wrap top-grid">
         <img class="kv-logo" src="https://produto.nitron.com.br/logo-02.png" alt="Acelera Nitron Black Novembro" width="1505" height="910">
@@ -430,6 +437,19 @@ document.getElementById("q").addEventListener("input", e => {
   cards.forEach(c => { const ok = !q || c.dataset.search.includes(q); c.hidden = !ok; if (ok) n++; });
   empty.style.display = n ? "none" : "block";
 });
+
+/* Luzinhas pisca-pisca no hero */
+(function pisca() {
+  const box = document.querySelector(".lights");
+  const cores = [["#ffffff", "rgba(255,255,255,.55)"], ["#6fe0e6", "rgba(63,230,238,.7)"], ["#3fe6ee", "rgba(63,230,238,.8)"]];
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  let h = "";
+  for (let i = 0; i < 54; i++) {
+    const [c, g] = cores[i % 3], size = 3 + rnd() * 5;
+    h += `<i style="left:${(rnd() * 100).toFixed(1)}%;top:${(rnd() * 100).toFixed(1)}%;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;--c:${c};--g:${g};--d:${(1.4 + rnd() * 2.2).toFixed(2)}s;--dl:-${(rnd() * 3).toFixed(2)}s"></i>`;
+  }
+  box.innerHTML = h;
+})();
 
 /* Hero → menu fixo: o progresso do scroll alimenta a variável --p */
 (function heroCollapse() {
