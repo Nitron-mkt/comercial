@@ -18,8 +18,8 @@
     --muted:#6b6b73;
     --line:#e7e5e1;
     --paper:#f6f4f0;
-    --gold:#e8b84a;
-    --gold-2:#ffd879;
+    --gold:#08a9b1; /* verde Nitron */
+    --gold-2:#6fe0e6;
     --red:#d7263d;
     --green:#1f7a4d;
     --bar:64px;
@@ -39,7 +39,7 @@
     z-index:50;
     color:#fff;
     background:
-      radial-gradient(1200px 600px at 75% 40%, rgba(232,184,74,.18), transparent 60%),
+      radial-gradient(1200px 600px at 75% 40%, rgba(8,169,177,.22), transparent 60%),
       radial-gradient(700px 500px at 10% 90%, rgba(215,38,61,.22), transparent 60%),
       var(--bg);
     overflow:hidden;
@@ -135,7 +135,7 @@
   @media (min-width:1000px){.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}}
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
-  .thumb{position:relative;aspect-ratio:1/1;background:linear-gradient(180deg,#faf8f4,#efebe4);display:grid;place-items:center}
+  .thumb{position:relative;aspect-ratio:1/1;background:#fff;border-bottom:1px solid var(--line);display:grid;place-items:center}
   .thumb img,.thumb svg{width:78%;height:78%;object-fit:contain}
   .tag{position:absolute;top:8px;font-size:11px;font-weight:800;padding:4px 8px;border-radius:999px;line-height:1}
   .tag--off{left:8px;background:var(--red);color:#fff}
@@ -143,7 +143,7 @@
   .info{padding:12px 12px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
   .sku{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em}
   .name{font-size:14px;font-weight:700;line-height:1.25;margin:0;min-height:2.5em}
-  .min{font-size:12px;color:var(--ink);background:#fbf3df;border-radius:8px;padding:5px 8px;align-self:flex-start;font-weight:600}
+  .min{font-size:12px;color:var(--ink);background:#e2f6f7;border-radius:8px;padding:5px 8px;align-self:flex-start;font-weight:600}
   .min b{font-weight:800}
   .prices{margin:4px 0 0;display:flex;flex-direction:column;gap:4px;margin-top:auto}
   .pr{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:12px}
@@ -163,7 +163,7 @@
   .rules{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:10px}
   @media (min-width:720px){.rules{grid-template-columns:1fr 1fr}}
   .rules li{display:flex;gap:12px;align-items:flex-start;background:var(--bg-2);border:1px solid #24242a;border-radius:14px;padding:14px 16px}
-  .rules .ic{flex:0 0 36px;height:36px;border-radius:10px;background:rgba(232,184,74,.14);color:var(--gold);display:grid;place-items:center;font-weight:800;font-size:13px}
+  .rules .ic{flex:0 0 36px;height:36px;border-radius:10px;background:rgba(8,169,177,.16);color:var(--gold);display:grid;place-items:center;font-weight:800;font-size:13px}
   .rules strong{display:block;color:#fff;font-size:15px}
   .rules span{font-size:14px;color:#bdb8ae}
   .legal{margin-top:28px;padding-top:20px;border-top:1px solid #24242a;font-size:12px;color:#85817a;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
@@ -224,7 +224,7 @@
       <span><i class="dot" style="background:#c9c5bd"></i><b>Tabela Padrão</b></span>
       <span><i class="dot" style="background:#c9c5bd"></i><b>Tabela Acelera</b></span>
       <span><i class="dot" style="background:var(--bg)"></i><b>Black Natal</b> (preço da campanha)</span>
-      <span>Valores por pacote · Fardo mínimo indicado em cada produto</span>
+      <span>Valores unitários · Quantidade mínima de fardos indicada em cada produto</span>
     </div>
 
     <div class="grid" id="grid"></div>
@@ -241,7 +241,7 @@
       <li><div class="ic">%</div><div><strong>15% OFF nos itens selecionados</strong><span>Desconto válido somente para os produtos participantes desta página.</span></div></li>
       <li><div class="ic">51</div><div><strong>51 itens mais vendidos da Nitron</strong><span>Produtos da Curva A, os campeões de venda do nosso portfólio.</span></div></li>
       <li><div class="ic">5+</div><div><strong>Mínimo de 5 itens por pedido</strong><span>O pedido precisa ter pelo menos 5 itens participantes para garantir o desconto.</span></div></li>
-      <li><div class="ic">▦</div><div><strong>Compra pelo fardo mínimo</strong><span>O preço promocional vale apenas na compra pelos fardos mínimos de 10, 20 ou 30 pacotes, conforme indicado em cada produto.</span></div></li>
+      <li><div class="ic">▦</div><div><strong>Compra pelo fardo mínimo</strong><span>O preço promocional vale apenas na compra da quantidade mínima de fardos indicada em cada produto.</span></div></li>
       <li><div class="ic">★</div><div><strong>Tabelas participantes</strong><span>Válido para clientes das tabelas Gestor, Clube Varejo e Clube Atacado.</span></div></li>
       <li><div class="ic">+5</div><div><strong>Linha Nitron Mob: 5% bonificado</strong><span>Nos produtos da linha Nitron Mob, você recebe 5% em produtos bonificados.</span></div></li>
       <li><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><div><strong>Vigência: de 03/11 a 10/12</strong><span>Condições válidas para pedidos realizados dentro desse período.</span></div></li>
@@ -259,37 +259,74 @@
    Campos:
      cod     : código do produto
      nome    : descrição
-     linha   : "Nitron Mob" exibe o selo +5% bonificado
-     fardo   : quantidade mínima de pacotes (10, 20 ou 30)
+     ref     : referência do produto
+     linha   : (opcional) "Nitron Mob" exibe o selo +5% bonificado
+     fardo   : quantidade mínima de fardos
      padrao  : preço Tabela Padrão
-     acelera : preço Tabela Acelera
+     acelera : preço Tabela Acelera (coluna "Tab Varejo" da planilha)
      black   : preço Black Natal
      img     : (opcional) URL da foto do produto
    ========================================================= */
-const PRODUTOS = (() => {
-  const linhas = ["Nitron", "Nitron", "Nitron", "Nitron Mob"];
-  const fardos = [10, 20, 30];
-  return Array.from({ length: 51 }, (_, i) => {
-    const padrao = +(18 + ((i * 37) % 120) + ((i * 13) % 100) / 100).toFixed(2);
-    return {
-      cod: String(10100 + i * 7),
-      nome: `Produto Nitron ${String(i + 1).padStart(2, "0")} - descrição do item`,
-      linha: linhas[i % 4],
-      fardo: fardos[i % 3],
-      padrao,
-      acelera: +(padrao * 0.93).toFixed(2),
-      black: +(padrao * 0.85).toFixed(2),
-      img: ""
-    };
-  });
-})();
+const PRODUTOS = [
+  {"ref": "030.012.001", "cod": "4084", "nome": "POTE MONTEREY COM 3 DIVISORIAS - TRANSPARENTE 1,1L (0307.012.001)", "fardo": 10, "padrao": 9.77, "acelera": 6.25, "black": 5.31, "img": "https://produto.nitron.com.br/Baixa/030_012_001-01.jpg"},
+  {"ref": "034.012.001", "cod": "4087", "nome": "POTE MONACO COM 3 DIVISORIAS - TRANSPARENTE 1L", "fardo": 10, "padrao": 10.23, "acelera": 6.54, "black": 5.56, "img": "https://produto.nitron.com.br/Baixa/034_012_001-01.jpg"},
+  {"ref": "041.012.003", "cod": "293", "nome": "ORGANIZADOR MULTIUSO RATTAN COM 3 DIVISORIAS - PRETO (041/P)", "fardo": 10, "padrao": 6.51, "acelera": 4.16, "black": 3.54, "img": "https://produto.nitron.com.br/Baixa/041_012_003-01.jpg"},
+  {"ref": "047.012.003", "cod": "302", "nome": "CESTO ORGANIZADOR VIME - PRETO 7L (047/P)", "fardo": 6, "padrao": 14.17, "acelera": 9.06, "black": 7.7, "img": "https://produto.nitron.com.br/Baixa/047_012_003-01.jpg"},
+  {"ref": "052.006.003", "cod": "431", "nome": "LIXEIRA RATTAN COM PEDAL - PRETA 6L (052/P)", "fardo": 10, "padrao": 18.68, "acelera": 11.95, "black": 10.16, "img": "https://produto.nitron.com.br/Baixa/052_006_003-01.jpg"},
+  {"ref": "062.012.003", "cod": "311", "nome": "CAIXA ORGANIZADORA RATTAN COM TAMPA - PRETA 4L (062/P)", "fardo": 10, "padrao": 13.37, "acelera": 8.56, "black": 7.27, "img": "https://produto.nitron.com.br/Baixa/062_012_003-01.jpg"},
+  {"ref": "065.012.003", "cod": "323", "nome": "CAIXA ORGANIZADORA RATTAN COM TAMPA - PRETA 2L (065/P)", "fardo": 10, "padrao": 11.26, "acelera": 7.2, "black": 6.12, "img": "https://produto.nitron.com.br/Baixa/065_012_003-01.jpg"},
+  {"ref": "068.012.003", "cod": "335", "nome": "CAIXA ORGANIZADORA RATTAN COM TAMPA - PRETA 8L (068/P)", "fardo": 10, "padrao": 20.0, "acelera": 12.8, "black": 10.88, "img": "https://produto.nitron.com.br/Baixa/068_012_003-01.jpg"},
+  {"ref": "069.006.003", "cod": "347", "nome": "CAIXA ORGANIZADORA RATTAN COM TAMPA - PRETA 16L (069/P)", "fardo": 10, "padrao": 28.26, "acelera": 18.08, "black": 15.37, "img": "https://produto.nitron.com.br/Baixa/069_006_003-01.jpg"},
+  {"ref": "079.012.003", "cod": "3307", "nome": "PORTA SHAMPOO E PRATELEIRA MADRI - PRETO (079/P)", "fardo": 10, "padrao": 8.18, "acelera": 5.23, "black": 4.45, "img": "https://produto.nitron.com.br/Baixa/079_012_003-01.jpg"},
+  {"ref": "095.012.003", "cod": "3314", "nome": "CANTONEIRA PARA BANHEIRO PREMIUM- PRETO (095/P)", "fardo": 10, "padrao": 14.49, "acelera": 9.27, "black": 7.88, "img": "https://produto.nitron.com.br/Baixa/095_012_003-01.jpg"},
+  {"ref": "100.006.003", "cod": "6747", "nome": "LIXEIRA COM PEDAL - PRETA 7L", "fardo": 10, "padrao": 20.12, "acelera": 12.87, "black": 10.94, "img": "https://produto.nitron.com.br/Baixa/100_006_003-01.jpg"},
+  {"ref": "123.012.028", "cod": "7070", "nome": "CAIXA DE FERRAMENTAS NITRONFORT - LARANJA 2,2L", "fardo": 5, "padrao": 18.98, "acelera": 12.14, "black": 10.32, "img": "https://produto.nitron.com.br/Baixa/123_012_028-01.jpg"},
+  {"ref": "128.012.003", "cod": "6598", "nome": "CESTINHO PARA PRENDEDOR - PRETO", "fardo": 10, "padrao": 6.97, "acelera": 4.46, "black": 3.79, "img": "https://produto.nitron.com.br/Baixa/128_012_003-01.jpg"},
+  {"ref": "130.012.003", "cod": "6661", "nome": "LIXEIRA RETRATIL - PRETA 4L", "fardo": 10, "padrao": 13.13, "acelera": 8.4, "black": 7.14, "img": "https://produto.nitron.com.br/Baixa/130_012_003-01.jpg"},
+  {"ref": "133.012.003", "cod": "64", "nome": "PORTA DETERGENTE RATTAN COM BASE - PRETO (133/P)", "fardo": 15, "padrao": 6.61, "acelera": 4.23, "black": 3.6, "img": "https://produto.nitron.com.br/Baixa/133_012_003-01.jpg"},
+  {"ref": "134.012.003", "cod": "443", "nome": "LIXEIRA BASCULANTE RATTAN - PRETO 4,5L (134/P)", "fardo": 8, "padrao": 18.74, "acelera": 11.99, "black": 10.19, "img": "https://produto.nitron.com.br/Baixa/134_012_003-01.jpg"},
+  {"ref": "137.012.002", "cod": "257", "nome": "FRASQUEIRA MEDICAMENTOS - BRANCA 2,8L (137)", "fardo": 10, "padrao": 16.52, "acelera": 10.57, "black": 8.99, "img": "https://produto.nitron.com.br/Baixa/137_012_002-01.jpg"},
+  {"ref": "150.004.003", "cod": "3285", "nome": "LIXEIRA COM PEDAL - PRETA 16L (150/P)", "fardo": 10, "padrao": 31.46, "acelera": 20.13, "black": 17.11, "img": "https://produto.nitron.com.br/Baixa/150_004_003-01.jpg"},
+  {"ref": "156.012.001", "cod": "4155", "nome": "POTE ALTO COM TRAVAS - TRANSPARENTE 2,2L", "fardo": 10, "padrao": 10.38, "acelera": 6.64, "black": 5.64, "img": "https://produto.nitron.com.br/Baixa/156_012_001-01.jpg"},
+  {"ref": "163.004.003", "cod": "451", "nome": "LIXEIRA VIME - PRETA 12L (163/P)", "fardo": 10, "padrao": 31.46, "acelera": 20.13, "black": 17.11, "img": "https://produto.nitron.com.br/Baixa/163_004_003-01.jpg"},
+  {"ref": "185.012.003", "cod": "3174", "nome": "PORTA VASSOURAS COM 4 ENCAIXES - PRETO (185/P)", "fardo": 10, "padrao": 11.8, "acelera": 7.54, "black": 6.41, "img": "https://produto.nitron.com.br/Baixa/185_012_003-01.jpg"},
+  {"ref": "195.006.012", "cod": "7098", "nome": "FRASQUEIRA CRISTAL COM DIVISORIAS - ROSA 1,5L", "fardo": 10, "padrao": 14.56, "acelera": 9.31, "black": 7.92, "img": "https://produto.nitron.com.br/Baixa/195_006_012-01.jpg"},
+  {"ref": "211.012.003", "cod": "3346", "nome": "CANTONEIRA PARA BANHEIRO SMART - PRETO (211/P)", "fardo": 10, "padrao": 14.49, "acelera": 9.27, "black": 7.88, "img": "https://produto.nitron.com.br/Baixa/211_012_003-01.jpg"},
+  {"ref": "214.006.003", "cod": "3419", "nome": "ORGANIZADOR MULTIUSO RATTAN COM 6 DIVISORIAS - PRETO (214/P)", "fardo": 10, "padrao": 15.1, "acelera": 9.67, "black": 8.22, "img": "https://produto.nitron.com.br/Baixa/214_006_003-01.jpg"},
+  {"ref": "237.006.003", "cod": "6639", "nome": "POTE ACOPLADO COM COPO MEDIDOR - PRETO 5,8L", "fardo": 10, "padrao": 18.33, "acelera": 11.73, "black": 9.97, "img": "https://produto.nitron.com.br/Baixa/237_006_003-01.jpg"},
+  {"ref": "238.012.001", "cod": "11906", "nome": "POTE ACOPLADO COM ROSCA - TRANSPARENTE 2L", "fardo": 10, "padrao": 9.45, "acelera": 6.05, "black": 5.14, "img": "https://produto.nitron.com.br/Baixa/238_012_001-01.jpg"},
+  {"ref": "239.012.001", "cod": "11909", "nome": "POTE ACOPLADO COM ROSCA - TRANSPARENTE 3L", "fardo": 10, "padrao": 11.19, "acelera": 7.16, "black": 6.09, "img": "https://produto.nitron.com.br/Baixa/239_012_001-01.jpg"},
+  {"ref": "242.024.001", "cod": "108", "nome": "POTE RASO COM VALVULA - 950ML (242)", "fardo": 4, "padrao": 7.28, "acelera": 4.66, "black": 3.96, "img": "https://produto.nitron.com.br/Baixa/242_024_001-01.jpg"},
+  {"ref": "2500.012.001", "cod": "4102", "nome": "POTE ALTO RETANGULAR - TRANSPARENTE 868ML", "fardo": 15, "padrao": 6.01, "acelera": 3.85, "black": 3.27, "img": "https://produto.nitron.com.br/Baixa/2500_012_001-01.jpg"},
+  {"ref": "255.036.016", "cod": "218", "nome": "FORMA DE GELO FIRENZE COM TAMPA (255)", "fardo": 3, "padrao": 9.14, "acelera": 5.84, "black": 4.97, "img": "https://produto.nitron.com.br/Baixa/255_036_016-01.jpg"},
+  {"ref": "257.012.003", "cod": "1880", "nome": "CESTO ALONGADO JUTA - PRETO 3,7L (257/P)", "fardo": 6, "padrao": 11.82, "acelera": 7.56, "black": 6.43, "img": "https://produto.nitron.com.br/Baixa/257_012_003-01.jpg"},
+  {"ref": "258.006.003", "cod": "1874", "nome": "CESTO ALONGADO JUTA - PRETO 7,4L (258/P)", "fardo": 10, "padrao": 18.36, "acelera": 11.75, "black": 9.99, "img": "https://produto.nitron.com.br/Baixa/258_006_003-01.jpg"},
+  {"ref": "2580.012.001", "cod": "4078", "nome": "POTE ALTO RETANGULAR - TRANSPARENTE 3L", "fardo": 15, "padrao": 8.97, "acelera": 5.74, "black": 4.88, "img": "https://produto.nitron.com.br/Baixa/2580_012_001-01.jpg"},
+  {"ref": "2590.012.001", "cod": "4081", "nome": "POTE ALTO RETANGULAR - TRANSPARENTE 1,5L", "fardo": 15, "padrao": 7.11, "acelera": 4.55, "black": 3.86, "img": "https://produto.nitron.com.br/Baixa/2590_012_001-01.jpg"},
+  {"ref": "268.012.003", "cod": "1909", "nome": "CESTO EUROPA JUTA - PRETO 5,3L (268/P)", "fardo": 4, "padrao": 15.66, "acelera": 10.02, "black": 8.52, "img": "https://produto.nitron.com.br/Baixa/268_012_003-01.jpg"},
+  {"ref": "284.012.003", "cod": "3392", "nome": "CESTO TRANSPORTA TUDO - PRETO (284/P)", "fardo": 3, "padrao": 19.27, "acelera": 12.33, "black": 10.48, "img": "https://produto.nitron.com.br/Baixa/284_012_003-01.jpg"},
+  {"ref": "323.006.001", "cod": "4385", "nome": "POTE MODULAR - TRANSPARENTE 2,4L", "fardo": 5, "padrao": 11.48, "acelera": 7.34, "black": 6.24, "img": "https://produto.nitron.com.br/Baixa/323_006_001-01.jpg"},
+  {"ref": "359.012.003", "cod": "152", "nome": "POTE ARROZ ACOPLADO COM ROSCA - 2L", "fardo": 5, "padrao": 9.51, "acelera": 6.08, "black": 5.17, "img": "https://produto.nitron.com.br/Baixa/359_012_003-01.jpg"},
+  {"ref": "360.012.003", "cod": "154", "nome": "POTE FEIJAO ACOPLADO COM ROSCA - 2L", "fardo": 5, "padrao": 9.51, "acelera": 6.08, "black": 5.17, "img": "https://produto.nitron.com.br/Baixa/360_012_003-01.jpg"},
+  {"ref": "362.012.003", "cod": "151", "nome": "POTE ACUCAR ACOPLADO COM ROSCA - 2L", "fardo": 5, "padrao": 9.51, "acelera": 6.08, "black": 5.17, "img": "https://produto.nitron.com.br/Baixa/362_012_003-01.jpg"},
+  {"ref": "363.012.003", "cod": "153", "nome": "POTE CAFE ACOPLADO COM ROSCA - 2L", "fardo": 5, "padrao": 9.51, "acelera": 6.08, "black": 5.17, "img": "https://produto.nitron.com.br/Baixa/363_012_003-01.jpg"},
+  {"ref": "450.012.003", "cod": "7120", "nome": "LIXEIRA JUTA COM CLIQUE - PRETA 4,5L", "fardo": 5, "padrao": 18.88, "acelera": 12.08, "black": 10.27, "img": "https://produto.nitron.com.br/Baixa/450_012_003-01.jpg"},
+  {"ref": "501.012.003", "cod": "8605", "nome": "CAIXA ORGANIZADORA FLAT COM TAMPA - PRETA 2,35L", "fardo": 5, "padrao": 10.96, "acelera": 7.01, "black": 5.96, "img": "https://produto.nitron.com.br/Baixa/501_012_003-01.jpg"},
+  {"ref": "502.012.003", "cod": "8607", "nome": "CAIXA ORGANIZADORA FLAT COM TAMPA - PRETA 3,75L", "fardo": 5, "padrao": 12.76, "acelera": 8.17, "black": 6.94, "img": "https://produto.nitron.com.br/Baixa/502_012_003-01.jpg"},
+  {"ref": "820.006.002", "cod": "12065", "nome": "ESCORREDOR DE PRATOS FLAT - BRANCO", "fardo": 3, "padrao": 26.75, "acelera": 17.11, "black": 14.55, "img": "https://produto.nitron.com.br/Baixa/820_006_002-01.jpg"},
+  {"ref": "820.006.003", "cod": "12066", "nome": "ESCORREDOR DE PRATOS FLAT - PRETO", "fardo": 3, "padrao": 26.75, "acelera": 17.11, "black": 14.55, "img": "https://produto.nitron.com.br/Baixa/820_006_003-01.jpg"},
+  {"ref": "920.004.003", "cod": "12023", "nome": "CONJ. PORTA DETERGENTE FLAT COM 2 PECAS - PRETO 500ML", "fardo": 20, "padrao": 12.91, "acelera": 8.26, "black": 7.02, "img": "https://produto.nitron.com.br/Baixa/920_004_003-01.jpg"},
+  {"ref": "215.012.003", "cod": "6681", "nome": "POTE ULTRAFORTE COM TRAVAS - PRETO 2,1L", "fardo": 10, "padrao": 12.57, "acelera": 8.04, "black": 6.84, "img": "https://produto.nitron.com.br/Baixa/215_012_003-01.jpg"},
+  {"ref": "216.012.003", "cod": "6683", "nome": "POTE ULTRAFORTE COM TRAVAS - PRETO 4L", "fardo": 10, "padrao": 15.72, "acelera": 10.06, "black": 8.55, "img": "https://produto.nitron.com.br/Baixa/216_012_003-01.jpg"},
+  {"ref": "196.006.001", "cod": "4072", "nome": "POTE PREMIUM - TRANSPARENTE 7,9L", "fardo": 6, "padrao": 21.95, "acelera": 14.04, "black": 11.93, "img": "https://produto.nitron.com.br/Baixa/196_006_001-01.jpg"}
+];
 
 const brl = v => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 
 /* Imagem de placeholder (pacote) enquanto não há foto */
 function placeholder(p, i) {
-  const cores = ["#d7263d", "#e8b84a", "#1f7a4d", "#16161a", "#2b59c3"];
+  const cores = ["#d7263d", "#08a9b1", "#05666b", "#16161a"];
   const c = cores[i % cores.length];
   return `<svg viewBox="0 0 120 120" aria-hidden="true">
     <ellipse cx="60" cy="108" rx="38" ry="5" fill="rgba(0,0,0,.08)"/>
@@ -303,18 +340,18 @@ function placeholder(p, i) {
 function card(p, i) {
   const mob = /mob/i.test(p.linha || "");
   const media = p.img
-    ? `<img src="${esc(p.img)}" alt="${esc(p.nome)}" loading="lazy">`
+    ? `<img src="${esc(p.img)}" alt="${esc(p.nome)}" loading="lazy" onerror="this.style.visibility='hidden'">`
     : placeholder(p, i);
-  return `<article class="card" data-search="${esc((p.cod + " " + p.nome + " " + (p.linha||"")).toLowerCase())}">
+  return `<article class="card" data-search="${esc((p.cod + " " + (p.ref||"") + " " + p.nome + " " + (p.linha||"")).toLowerCase())}">
     <div class="thumb">
       <span class="tag tag--off">-15%</span>
       ${mob ? `<span class="tag tag--mob">+5% bonif.</span>` : ""}
       ${media}
     </div>
     <div class="info">
-      <span class="sku">CÓD. ${esc(p.cod)}${mob ? " · NITRON MOB" : ""}</span>
+      <span class="sku">CÓD. ${esc(p.cod)}${p.ref ? " · REF. " + esc(p.ref) : ""}${mob ? " · NITRON MOB" : ""}</span>
       <h3 class="name">${esc(p.nome)}</h3>
-      <span class="min">Fardo mín.: <b>${p.fardo} pct</b></span>
+      <span class="min">Mínimo: <b>${p.fardo} ${p.fardo === 1 ? "fardo" : "fardos"}</b></span>
       <dl class="prices">
         <div class="pr"><dt>Tabela Padrão</dt><dd>${brl(p.padrao)}</dd></div>
         <div class="pr"><dt>Tabela Acelera</dt><dd>${brl(p.acelera)}</dd></div>
@@ -342,7 +379,7 @@ document.getElementById("q").addEventListener("input", e => {
 (function buildTree() {
   const rows = [1, 2, 3, 4, 5, 6];
   const bw = 46, bh = 34, gap = 4, W = rows.at(-1) * (bw + gap) + 20;
-  const cores = ["#d7263d", "#e8b84a", "#1f7a4d", "#f4f1ea", "#b81d31", "#c99a2e"];
+  const cores = ["#d7263d", "#08a9b1", "#05666b", "#f4f1ea", "#b81d31", "#0a8f96"];
   const top = 60;
   let s = "", k = 0;
   rows.forEach((n, r) => {
@@ -362,14 +399,14 @@ document.getElementById("q").addEventListener("input", e => {
     const r = 1 + (i % 5), y = top + r * (bh + gap) - 2;
     const span = rows[r] * (bw + gap);
     const x = (W - span) / 2 + ((i * 53) % span);
-    lights += `<circle class="twinkle" style="animation-delay:${(i % 6) * .3}s" cx="${x}" cy="${y}" r="3.2" fill="${i % 2 ? "#ffd879" : "#fff"}"/>`;
+    lights += `<circle class="twinkle" style="animation-delay:${(i % 6) * .3}s" cx="${x}" cy="${y}" r="3.2" fill="${i % 2 ? "#6fe0e6" : "#fff"}"/>`;
   }
   const baseY = top + rows.length * (bh + gap);
   const H = baseY + 70;
-  const star = `<path class="twinkle" d="M${W/2} 10l9 19 21 3-15 15 4 21-19-10-19 10 4-21-15-15 21-3z" fill="#ffd879"/>`;
+  const star = `<path class="twinkle" d="M${W/2} 10l9 19 21 3-15 15 4 21-19-10-19 10 4-21-15-15 21-3z" fill="#6fe0e6"/>`;
   const base = `<rect x="${W/2 - 34}" y="${baseY}" width="68" height="30" rx="4" fill="#3a2a1a"/>
-    <rect x="${W/2 - 80}" y="${baseY + 30}" width="160" height="26" rx="6" fill="#1b1b20" stroke="#e8b84a" stroke-width="1.5"/>
-    <text x="${W/2}" y="${baseY + 48}" text-anchor="middle" font-family="Anton,Impact" font-size="14" letter-spacing="2" fill="#e8b84a">BLACK NATAL</text>`;
+    <rect x="${W/2 - 80}" y="${baseY + 30}" width="160" height="26" rx="6" fill="#1b1b20" stroke="#08a9b1" stroke-width="1.5"/>
+    <text x="${W/2}" y="${baseY + 48}" text-anchor="middle" font-family="Anton,Impact" font-size="14" letter-spacing="2" fill="#08a9b1">BLACK NATAL</text>`;
   document.getElementById("tree").innerHTML =
     `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${star}${s}${lights}${base}</svg>`;
 })();
