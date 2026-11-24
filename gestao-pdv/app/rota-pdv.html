@@ -111,6 +111,7 @@ th{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mu
   </section>
 
   <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tabSemana" aria-selected="false">Semana 1</button>
     <button class="tab" role="tab" id="tabLojas" aria-selected="true">Lojas</button>
     <button class="tab" role="tab" id="tabVisitas" aria-selected="false">Visitas registradas</button>
     <button class="tab" role="tab" id="tabCriterios" aria-selected="false">Critérios</button>
@@ -131,6 +132,12 @@ th{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mu
   <section id="viewVisitas" hidden style="display:grid;gap:12px">
     <div class="bar"><h2>Visitas registradas</h2><span class="count" id="visCount"></span></div>
     <div id="visList"></div>
+  </section>
+
+  <section id="viewSemana" hidden style="display:grid;gap:14px">
+    <div class="bar"><h2>Semana 1 · 30/11 a 04/12</h2><span class="count" id="semCount"></span></div>
+    <div class="note"><strong>Antes de sair:</strong> peça a cada representante o endereço e o nome do contato das lojas do dia e preencha a ficha. Assim o link do Maps já leva à porta, e a ordem das paradas pode ser ajustada pelo trânsito. Conte cerca de 6 a 7 lojas por dia, com 40 a 60 minutos em cada uma.</div>
+    <div id="semana" style="display:grid;gap:14px"></div>
   </section>
 
   <section id="viewCriterios" hidden style="display:grid;gap:12px">
@@ -161,7 +168,46 @@ const AREAS=['Zona Leste','Zona Norte','A confirmar','Guarulhos','Mogi das Cruze
 const CLASSES=['Manter e crescer','Em alta','Recuperar','Reativar','Acompanhar'];
 const PROM={fixo:'Promotor fixo',roteiro:'Promotor roteirizado',nao:'Não precisa',avaliar:'Avaliar depois'};
 let PDVS=[], fichas={}, visitas=[], db=null, user=null, assets=null, me=null, names={};
-let st={rep:'Todos',q:'',area:'rota',classe:'todas',onda:'onda',tab:'Lojas'};
+let st={rep:'Todos',q:'',area:'rota',classe:'todas',onda:'onda',tab:'Semana'};
+const SEMANA=[
+ {dia:'Segunda, 30/11',area:'Arujá → Itaquaquecetuba → Suzano',reps:'Edson e Carlinhos',paradas:[
+  [124934,'Maior PDV da rota (R$ 331 mil, +72%), mas sem compra desde junho. Entender o motivo e a abertura para promotor fixo.'],
+  [210691,'Mesmo grupo da Lumi e começou a comprar em 2026. Ver se a Lumi passou a comprar por aqui.'],
+  [51921,'Minimercado crescendo 44%. Checar espaço de gôndola.'],
+  [163582,'Saiu de R$ 4 mil para R$ 31 mil. Ver a exposição e o que puxou o crescimento.'],
+  [678,'Compra estável. Visita rápida de relacionamento.'],
+  [134865,'Rede Goya: caiu de R$ 114 mil para R$ 59 mil. Ver ruptura e concorrência na gôndola.'],
+  [63275,'Caiu de R$ 22 mil para R$ 6 mil. Entender a perda.']]},
+ {dia:'Terça, 01/12',area:'Mogi das Cruzes',reps:'Carlinhos, Milton e Edson',paradas:[
+  [103735,'Melhor loja Goya da rota (R$ 130 mil, +27%). Ver o que ela faz certo e levar para as outras Goya.'],
+  [61449,'Alabarce: esta loja cresce, mas outras 3 lojas da rede pararam de comprar. Pedir contato do comprador da rede.'],
+  [158820,'Cresceu 4 vezes no ano. Checar exposição e mix.'],
+  [222691,'Cliente novo (R$ 34 mil na 1ª compra, em outubro). Fazer relacionamento e ver a recompra.'],
+  [66758,'Precolândia: caiu de R$ 30 mil para R$ 11 mil. Ver a gôndola e anotar o nome do gerente.'],
+  [130635,'Caiu pela metade, só 1 compra no ano. Entender o motivo.']]},
+ {dia:'Quarta, 02/12',area:'Guarulhos',reps:'Carlinhos, Edson e Milton',paradas:[
+  [81793,'Rede Goya: caiu de R$ 118 mil para R$ 84 mil. Candidata a promotor roteirizado.'],
+  [7465,'Cresceu 4,7 vezes (R$ 37 mil). Ver exposição e espaço.'],
+  [179325,'Cliente novo (R$ 25 mil), sem compra desde agosto. Ver a recompra.'],
+  [66761,'Precolândia: caiu de R$ 23 mil para R$ 9 mil.'],
+  [9091,'Compra quase todo mês, mas caiu 43%. Checar ruptura.'],
+  [7596,'Caiu 39% e comprou pouco no semestre. Checar concorrência.'],
+  [63910,'Docemix dobrou (R$ 17 mil). Se der tempo.']]},
+ {dia:'Quinta, 03/12',area:'Zona Leste',reps:'Edson, Milton e Carlinhos',paradas:[
+  [66955,'Precolândia Loja 01 (Água Rasa): a rede inteira caiu de 30% a 50%. Pedir reunião com compras e apresentar o piloto de promotor.'],
+  [7979,'Lojão 2 Irmãos: caiu de R$ 172 mil para R$ 108 mil. É o 2º maior PDV da rota. Ver exposição e abertura para promotor.'],
+  [76652,'Lojão 2 Irmãos (mesma rede): +54%. Comparar com a Vila Matilde.'],
+  [57421,'Lojão 2 Irmãos: comprou R$ 13 mil no semestre. Comparar com a Vila Matilde.'],
+  [62500,'Estável em R$ 33 mil. Visita de relacionamento.'],
+  [62499,'Cresceu 43%. Ver espaço de gôndola.'],
+  [10268,'Sem compra desde abril (rede MJ Sleiman, todas pararam em abril). Entender o que houve com a rede.']]},
+ {dia:'Sexta, 04/12',area:'Zona Norte + fechamento',reps:'Milton e Edson; tarde com todos',paradas:[
+  [66757,'Precolândia Santana: caiu de R$ 24 mil para R$ 12 mil.'],
+  [66733,'Precolândia Casa Verde: sem compra desde dezembro/25. Entender o motivo.'],
+  [9780,'Compra estável. Visita de relacionamento.'],
+  [168309,'Maior cliente de SP sem zona definida (R$ 145 mil, +2.900%). Confirmar o endereço com o Carlinhos e encaixar se for na ZN ou ZL.']],
+  extra:'À tarde: reunião com os representantes para (1) conferir os registros da semana, (2) confirmar a zona das lojas de SP marcadas como "zona a confirmar" e (3) montar a Semana 2. Prioridade das SP: lojas Goya de SP, Utilfácil, Duquesa, Hay, Filhos do Rei e Magazine Eveline.'}
+];
 try{Object.assign(st,JSON.parse(localStorage.getItem('rotapdv-filtros')||'{}'))}catch(e){}
 const save=()=>{try{localStorage.setItem('rotapdv-filtros',JSON.stringify(st))}catch(e){}};
 
@@ -183,12 +229,13 @@ function setup(){
   $('#fOnda').onchange=e=>{st.onda=e.target.value;save();render()};
   $('#list').onclick=e=>{const c=e.target.closest('[data-cod]');if(c)openFicha(+c.dataset.cod)};
   $('#visList').onclick=e=>{const c=e.target.closest('[data-cod]');if(c)openFicha(+c.dataset.cod)};
-  ['Lojas','Visitas','Criterios'].forEach(t=>$('#tab'+t).onclick=()=>{st.tab=t;save();tabs()});
+  ['Semana','Lojas','Visitas','Criterios'].forEach(t=>$('#tab'+t).onclick=()=>{st.tab=t;save();tabs()});
+  $('#semana').onclick=e=>{const c=e.target.closest('[data-cod]');if(c)openFicha(+c.dataset.cod)};
   $('#sheet').onclick=e=>{if(e.target.id==='sheet')closeSheet()};
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
   tabs();
 }
-function tabs(){['Lojas','Visitas','Criterios'].forEach(t=>{$('#tab'+t).setAttribute('aria-selected',st.tab===t);$('#view'+t).hidden=st.tab!==t});}
+function tabs(){['Semana','Lojas','Visitas','Criterios'].forEach(t=>{$('#tab'+t).setAttribute('aria-selected',st.tab===t);$('#view'+t).hidden=st.tab!==t});}
 
 function filtered(){
   const q=st.q.trim().toLowerCase();
@@ -226,7 +273,16 @@ function render(){
   $('#sProm').textContent=Object.values(ult).filter(v=>v.promotor==='fixo'||v.promotor==='roteiro').length;
   renderVisitas();
 }
+function renderSemana(){
+  const byCod=Object.fromEntries(PDVS.map(p=>[p.cod,p]));let tot=0,feitas=0;
+  $('#semana').innerHTML=SEMANA.map(d=>{
+    const rows=d.paradas.map(([cod,foco],i)=>{const p=byCod[cod];if(!p)return '';tot++;const v=visDe(cod);if(v.length)feitas++;
+      return `<button class="card" data-cod="${cod}"><div style="min-width:0"><h3>${i+1}. ${esc(p.loja)}</h3><div class="meta"><span>${esc(p.rep)}</span><span>${esc(p.cidade)}</span><span>R$ ${fmt(p.f12)} mil ${p.f12a?'(antes '+fmt(p.f12a)+')':''}</span></div><p style="margin:4px 0 0;font-size:.9rem">${esc(foco)}</p></div><div class="fig">${v.length?`<span class="pill p-visit">Visitada ${fdate(v[0].data)}</span>`:'<span class="pill">Pendente</span>'}</div></button>`}).join('');
+    return `<div style="display:grid;gap:8px"><div><h3 style="font-size:1.25rem">${esc(d.dia)} · ${esc(d.area)}</h3><p class="sub">Com ${esc(d.reps)}</p></div><div class="list">${rows}</div>${d.extra?`<div class="note">${esc(d.extra)}</div>`:''}</div>`}).join('');
+  $('#semCount').textContent=`${feitas} de ${tot} visitadas`;
+}
 function renderVisitas(){
+  renderSemana();
   $('#visCount').textContent=visitas.length?`${visitas.length} visitas`:'';
   if(!visitas.length){$('#visList').innerHTML=`<p class="note">${db?'Nenhuma visita registrada ainda. Abra uma loja na aba Lojas e toque em <strong>Registrar visita</strong>.':'O registro de visitas precisa de login no claude.ai. Abra esta página conectado para registrar e ver as visitas.'}</p>`;return}
   const byCod=Object.fromEntries(PDVS.map(p=>[p.cod,p]));
