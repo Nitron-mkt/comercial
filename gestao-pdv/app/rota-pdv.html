@@ -245,7 +245,18 @@ function render(){
   renderVisitas();
 }
 const F=(c,t)=>[c,t];
+const L=(local,end,cidade,depois)=>({livre:true,local,end,cidade,depois});
+const mapsEnd=s=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(s);
+const mapsRota=ps=>{const a=ps.map(x=>x.end+', '+x.cidade+', SP');return 'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(a[0])+'&destination='+encodeURIComponent(a[a.length-1])+(a.length>2?'&waypoints='+encodeURIComponent(a.slice(1,-1).join('|')):'')+'&travelmode=driving'};
 const ROTEIRO=[
+ {curto:'Amanhã · 26/11',titulo:'Quinta, 26/11 · Arujá → Guarulhos',nota:'Roteiro definido por você: 6 paradas, de Arujá a Guarulhos (Cocaia), sempre no mesmo sentido. Os endereços não batem com nenhum cliente da lista; ao chegar, registre o nome da loja.',dias:[
+  {dia:'Quinta, 26/11',area:'Arujá → Guarulhos',reps:'',paradas:[
+   L('Arujá','Avenida Antônio Afonso de Lima, 205','Arujá','Siga sentido Guarulhos.'),
+   L('Vila Flórida','Avenida Otávio Braga de Mesquita, 2061','Guarulhos','Continue pela região da Otávio Braga em direção ao Centro.'),
+   L('Centro de Guarulhos','Rua Capitão Gabriel, 47','Guarulhos',''),
+   L('Vila Augusta','Avenida Guarulhos, 1662','Guarulhos','Siga pela região central em direção à Timóteo Penteado.'),
+   L('Vila Galvão','Avenida Doutor Timóteo Penteado, 3461','Guarulhos','Desça em direção ao Cocaia.'),
+   L('Cocaia','Avenida Brigadeiro Faria Lima, 3151','Guarulhos','Fim do roteiro.')]}]},
  {curto:'Semana 1 · 30/11',titulo:'Semana 1 · 30/11 a 04/12',nota:'Visitas de segunda a quinta. Sexta fica para trabalho interno na Nitron.',dias:[
   {dia:'Segunda, 30/11',area:'Arujá → Itaquaquecetuba → Suzano',reps:'Edson/Vitor e Carlinhos',paradas:[F(124934,'Maior PDV da rota (+72%). O CNPJ foi baixado na Receita em 24/08/26 e a loja passou a comprar pela Sigsat, no mesmo endereço. Confirmar e pedir para atualizar o cadastro.'),F(210691,'Novo CNPJ da Lumi (aberto em 02/2026, mesmo endereço). Somando os dois, ver se o volume se manteve e a abertura para promotor fixo.'),F(163582,'Cresceu 675%. Ver a exposição e o que puxou o crescimento.'),F(134865,'Rede Goya: caiu 48%. Ver ruptura e concorrência na gôndola.')]},
   {dia:'Terça, 01/12',area:'Mogi das Cruzes',reps:'Carlinhos, Milton e Edson/Vitor',paradas:[F(103735,'Melhor loja Goya da rota (+27%). Ver o que ela faz certo e levar para as outras Goya.'),F(61449,'Alabarce: esta loja cresce, mas outras 3 lojas da rede pararam de comprar. Pedir contato do comprador da rede.'),F(158820,'Cresceu 4 vezes no ano. Checar exposição e mix.'),F(222691,'Cliente novo (1ª compra em outubro). Fazer relacionamento e ver a recompra.')]},
@@ -289,6 +300,9 @@ function renderSemana(){
   $('#semTitle').textContent=W.titulo;
   $('#semNota').hidden=!W.nota;$('#semNota').textContent=W.nota||'';
   $('#semana').innerHTML=W.dias.map(d=>{
+    if(d.paradas.length&&d.paradas[0].livre){const ps=d.paradas;
+      const rows=ps.map((x,i)=>`<div class="card" style="cursor:default"><div style="min-width:0"><h3>${i+1}. ${esc(x.local)}</h3><div class="meta">${esc(x.end)}, ${esc(x.cidade)}</div>${x.depois?`<p style="margin:4px 0 0;font-size:.9rem">⬇️ ${esc(x.depois)}</p>`:''}</div><div class="fig"><a href="${esc(mapsEnd(x.end+', '+x.cidade+', SP'))}" target="_blank" rel="noopener">Maps</a></div></div>`).join('');
+      return `<div style="display:grid;gap:8px"><div class="bar"><div><h3 style="font-size:1.25rem">${esc(d.dia)} · ${esc(d.area)}</h3><p class="sub">${ps.length} paradas</p></div><a class="btn" href="${esc(mapsRota(ps))}" target="_blank" rel="noopener">Abrir rota completa no Maps</a></div><div class="list">${rows}</div></div>`}
     const rows=d.paradas.map(([cod,foco],i)=>{const p=byCod[cod];if(!p)return '';tot++;const v=visDe(cod);if(v.length)feitas++;
       return `<button class="card" data-cod="${cod}"><div style="min-width:0"><h3>${i+1}. ${esc(p.loja)}</h3><div class="meta"><span>${esc(repNome(p))}</span><span>${esc(p.cidade)}</span><span class="${p.var==null||p.var>=0?'up':'down'}">${varTxt(p)} em 12 meses</span></div><div class="meta" style="margin-top:2px">${esc(endTxt(p))}</div><p style="margin:4px 0 0;font-size:.9rem">${esc(foco)}</p>${p.alerta?`<p style="margin:4px 0 0"><span class="pill c-Reativar">${esc(p.alerta)}</span></p>`:''}</div><div class="fig">${v.length?`<span class="pill p-visit">Visitada ${fdate(v[0].data)}</span>`:'<span class="pill">Pendente</span>'}</div></button>`}).join('');
     return `<div style="display:grid;gap:8px"><div><h3 style="font-size:1.25rem">${esc(d.dia)} · ${esc(d.area)}</h3><p class="sub">${d.paradas.length?'Com '+esc(d.reps):'Sem visitas'}</p></div><div class="list">${rows}</div>${d.extra?`<div class="note">${esc(d.extra)}</div>`:''}</div>`}).join('');
