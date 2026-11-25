@@ -180,6 +180,8 @@ const onda=p=>naRota(p)&&p.classe!=='Acompanhar'&&p.pot>=20;
 const EDSON='Edson Gravinez';
 const atendeVitor=p=>p.rep===EDSON&&/Vitor/.test((fichas[p.cod]||{}).atende||'');
 const repNome=p=>{if(p.rep!==EDSON)return p.rep;const a=(fichas[p.cod]||{}).atende;return a?a:'Edson/Vitor Gravinez'};
+const endTxt=p=>{const f=fichas[p.cod]||{};const e=f.endereco||p.end||'';const b=f.bairro||p.bairro||'';return [e,b,(p.mun||p.cidade)+(p.cep?' · CEP '+p.cep:'')].filter(Boolean).join(', ')};
+const mapsUrl=p=>{const f=fichas[p.cod]||{};const q=(f.endereco||p.end)?[f.endereco||p.end,f.bairro||p.bairro,p.mun||p.cidade,'SP',p.cep].filter(Boolean).join(', '):p.loja+', '+p.cidade+' SP';return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)};
 const visDe=cod=>visitas.filter(v=>v.cod===cod);
 
 function setup(){
@@ -223,7 +225,7 @@ function card(p){
   const rede=p.ka||(p.lojas>1?p.matriz:'');
   return `<button class="card" data-cod="${p.cod}">
     <div style="min-width:0"><h3>${esc(p.loja)}</h3>
-      <div class="meta"><span>${esc(repNome(p))}</span><span>${esc(p.cidade)}</span>${rede?`<span>Rede: ${esc(rede)}${p.lojas>1?` (${p.lojas} lojas)`:''}</span>`:''}<span>Última compra ${fdate(p.ult)}</span>${f.endereco?`<span>${esc(f.endereco)}</span>`:''}</div></div>
+      <div class="meta"><span>${esc(repNome(p))}</span><span>${esc(p.cidade)}</span>${rede?`<span>Rede: ${esc(rede)}${p.lojas>1?` (${p.lojas} lojas)`:''}</span>`:''}<span>Última compra ${fdate(p.ult)}</span></div><div class="meta" style="margin-top:2px">${esc(endTxt(p))}</div></div>
     <div class="fig"><div class="big">R$ ${fmt(p.f12)} mil</div>${delta(p)} <span class="delta" style="color:var(--muted)">antes ${fmt(p.f12a)}</span></div>
     <div class="pills"><span class="pill c-${p.classe.split(' ')[0]}">${p.classe}</span>${onda(p)?'<span class="pill p-onda">1ª onda</span>':''}<span class="pill ${z==='A confirmar'?'p-conf':''}">${z==='A confirmar'?'Zona a confirmar':esc(z)}</span>${v.length?`<span class="pill p-visit">Visitada ${fdate(v[0].data)}</span>`:''}${f.fotoId?'<span class="pill">Com foto</span>':''}</div>
   </button>`;
@@ -243,7 +245,7 @@ function render(){
 const F=(c,t)=>[c,t];
 const ROTEIRO=[
  {curto:'Semana 1 · 30/11',titulo:'Semana 1 · 30/11 a 04/12',nota:'Visitas de segunda a quinta. Sexta fica para trabalho interno na Nitron.',dias:[
-  {dia:'Segunda, 30/11',area:'Arujá → Itaquaquecetuba → Suzano',reps:'Edson/Vitor e Carlinhos',paradas:[F(124934,'Maior PDV da rota (R$ 331 mil, +72%), mas sem compra desde junho. Entender o motivo e a abertura para promotor fixo.'),F(210691,'Mesmo grupo da Lumi e começou a comprar em 2026. Ver se a Lumi passou a comprar por aqui.'),F(163582,'Saiu de R$ 4 mil para R$ 31 mil. Ver a exposição e o que puxou o crescimento.'),F(134865,'Rede Goya: caiu de R$ 114 mil para R$ 59 mil. Ver ruptura e concorrência na gôndola.')]},
+  {dia:'Segunda, 30/11',area:'Arujá → Itaquaquecetuba → Suzano',reps:'Edson/Vitor e Carlinhos',paradas:[F(124934,'Maior PDV da rota (R$ 331 mil, +72%). O CNPJ foi baixado na Receita em 24/08/26 e a loja passou a comprar pela Sigsat, no mesmo endereço. Confirmar e pedir para atualizar o cadastro.'),F(210691,'Novo CNPJ da Lumi (aberto em 02/2026, mesmo endereço). Somando os dois, ver se o volume se manteve e a abertura para promotor fixo.'),F(163582,'Saiu de R$ 4 mil para R$ 31 mil. Ver a exposição e o que puxou o crescimento.'),F(134865,'Rede Goya: caiu de R$ 114 mil para R$ 59 mil. Ver ruptura e concorrência na gôndola.')]},
   {dia:'Terça, 01/12',area:'Mogi das Cruzes',reps:'Carlinhos, Milton e Edson/Vitor',paradas:[F(103735,'Melhor loja Goya da rota (R$ 130 mil, +27%). Ver o que ela faz certo e levar para as outras Goya.'),F(61449,'Alabarce: esta loja cresce, mas outras 3 lojas da rede pararam de comprar. Pedir contato do comprador da rede.'),F(158820,'Cresceu 4 vezes no ano. Checar exposição e mix.'),F(222691,'Cliente novo (R$ 34 mil na 1ª compra, em outubro). Fazer relacionamento e ver a recompra.')]},
   {dia:'Quarta, 02/12',area:'Guarulhos',reps:'Carlinhos, Edson/Vitor e Milton',paradas:[F(81793,'Rede Goya: caiu de R$ 118 mil para R$ 84 mil. Candidata a promotor roteirizado.'),F(7465,'Cresceu 4,7 vezes (R$ 37 mil). Ver exposição e espaço.'),F(179325,'Cliente novo (R$ 25 mil), sem compra desde agosto. Ver a recompra.'),F(66761,'Precolândia: caiu de R$ 23 mil para R$ 9 mil.')]},
   {dia:'Quinta, 03/12',area:'Zona Leste',reps:'Edson/Vitor e Milton',paradas:[F(66955,'Precolândia Loja 01 (Água Rasa): a rede inteira caiu de 30% a 50%. Pedir reunião com compras e apresentar o piloto de promotor.'),F(7979,'Lojão 2 Irmãos: caiu de R$ 172 mil para R$ 108 mil. É o 2º maior PDV da rota. Ver exposição e abertura para promotor.'),F(62500,'Estável em R$ 33 mil. Visita de relacionamento.'),F(62499,'Cresceu 43%. Ver espaço de gôndola.')]},
@@ -284,7 +286,7 @@ function renderSemana(){
   $('#semNota').hidden=!W.nota;$('#semNota').textContent=W.nota||'';
   $('#semana').innerHTML=W.dias.map(d=>{
     const rows=d.paradas.map(([cod,foco],i)=>{const p=byCod[cod];if(!p)return '';tot++;const v=visDe(cod);if(v.length)feitas++;
-      return `<button class="card" data-cod="${cod}"><div style="min-width:0"><h3>${i+1}. ${esc(p.loja)}</h3><div class="meta"><span>${esc(repNome(p))}</span><span>${esc(p.cidade)}</span><span>R$ ${fmt(p.f12)} mil ${p.f12a?'(antes '+fmt(p.f12a)+')':''}</span></div><p style="margin:4px 0 0;font-size:.9rem">${esc(foco)}</p></div><div class="fig">${v.length?`<span class="pill p-visit">Visitada ${fdate(v[0].data)}</span>`:'<span class="pill">Pendente</span>'}</div></button>`}).join('');
+      return `<button class="card" data-cod="${cod}"><div style="min-width:0"><h3>${i+1}. ${esc(p.loja)}</h3><div class="meta"><span>${esc(repNome(p))}</span><span>${esc(p.cidade)}</span><span>R$ ${fmt(p.f12)} mil ${p.f12a?'(antes '+fmt(p.f12a)+')':''}</span></div><div class="meta" style="margin-top:2px">${esc(endTxt(p))}</div><p style="margin:4px 0 0;font-size:.9rem">${esc(foco)}</p>${p.alerta?`<p style="margin:4px 0 0"><span class="pill c-Reativar">${esc(p.alerta)}</span></p>`:''}</div><div class="fig">${v.length?`<span class="pill p-visit">Visitada ${fdate(v[0].data)}</span>`:'<span class="pill">Pendente</span>'}</div></button>`}).join('');
     return `<div style="display:grid;gap:8px"><div><h3 style="font-size:1.25rem">${esc(d.dia)} · ${esc(d.area)}</h3><p class="sub">${d.paradas.length?'Com '+esc(d.reps):'Sem visitas'}</p></div><div class="list">${rows}</div>${d.extra?`<div class="note">${esc(d.extra)}</div>`:''}</div>`}).join('');
   $('#semCount').textContent=`${feitas} de ${tot} visitadas`;
 }
@@ -302,7 +304,7 @@ function closeSheet(){$('#sheet').hidden=true;openCod=null}
 function openFicha(cod,mode){
   const p=PDVS.find(x=>x.cod===cod);if(!p)return;openCod=cod;
   const f=fichas[cod]||{}, v=visDe(cod), z=zona(p);
-  const busca=encodeURIComponent((f.endereco?f.endereco+', ':p.loja+', ')+p.cidade+' SP');
+
   const can=!!db;
   $('#panel').innerHTML=`
   <div class="panel-head"><div style="min-width:0"><h2 id="pTitle">${esc(p.loja)}</h2><p class="sub">Cód. ${p.cod} · CNPJ ${esc(p.cnpj)} · ${esc(p.rep)} · ${esc(p.cidade)}</p></div><button class="x" aria-label="Fechar" id="xBtn">×</button></div>
@@ -312,12 +314,14 @@ function openFicha(cod,mode){
   </div>
   <div class="box">
     <h3>Como achar a loja</h3>
+    ${p.end?`<p class="status" style="margin:0">${esc(endTxt(p))}. Endereço da Receita Federal pelo CNPJ${p.endFonte==='CEP'?' (rua completada pelo CEP, sem número)':''}${p.fantasia?'; nome fantasia: '+esc(p.fantasia):''}. Se a loja estiver em outro lugar, corrija abaixo e salve.</p>`:''}
+    ${p.alerta?`<p style="margin:0"><span class="pill c-Reativar">${esc(p.alerta)}</span></p>`:''}
     ${f.fotoId?`<img class="photo" src="/_blob/${esc(f.fotoId)}" alt="Fachada de ${esc(p.loja)}">`:''}
     <div class="grid2">
       <label>Zona / área<select id="fzZona" ${can?'':'disabled'}>${AREAS.map(a=>`<option ${a===z?'selected':''}>${a}</option>`).join('')}</select></label>
-      <label>Bairro<input id="fzBairro" value="${esc(f.bairro||'')}" ${can?'':'disabled'} placeholder="ex.: Vila Matilde"></label>
+      <label>Bairro<input id="fzBairro" value="${esc(f.bairro||p.bairro||'')}" ${can?'':'disabled'} placeholder="ex.: Vila Matilde"></label>
     </div>
-    <label>Endereço<input id="fzEnd" value="${esc(f.endereco||'')}" ${can?'':'disabled'} placeholder="Rua, número"></label>
+    <label>Endereço<input id="fzEnd" value="${esc(f.endereco||p.end||'')}" ${can?'':'disabled'} placeholder="Rua, número"></label>
     <label>Ponto de referência<input id="fzRef" value="${esc(f.referencia||'')}" ${can?'':'disabled'} placeholder="ex.: em frente ao terminal, ao lado do Assaí"></label>
     <div class="grid2">
       <label>Contato na loja<input id="fzContato" value="${esc(f.contato||'')}" ${can?'':'disabled'} placeholder="Nome e cargo"></label>
@@ -327,7 +331,7 @@ function openFicha(cod,mode){
       <label>Quem atende<select id="fzAtende" ${can?'':'disabled'}>${['','Edson','Vitor','Edson e Vitor'].map(o=>`<option value="${o}" ${o===(f.atende||'')?'selected':''}>${o||'Não definido'}</option>`).join('')}</select></label>
     </div>
     <label>Foto da fachada<input id="fzFoto" type="file" accept="image/*" capture="environment" ${can&&assets?'':'disabled'}></label>
-    <div class="bar"><a href="https://www.google.com/maps/search/?api=1&query=${busca}" target="_blank" rel="noopener">Abrir no Google Maps</a>${can?'<button class="btn ghost" id="fzSave">Salvar ficha</button>':''}</div>
+    <div class="bar"><a href="${esc(mapsUrl(p))}" target="_blank" rel="noopener">Abrir no Google Maps</a>${can?'<button class="btn ghost" id="fzSave">Salvar ficha</button>':''}</div>
     <span class="status" id="fzStatus">${can?'':'Entre no claude.ai para editar a ficha.'}</span>
   </div>
   <div class="box">
